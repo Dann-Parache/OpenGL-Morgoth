@@ -52,11 +52,11 @@ void drawScene();
 void drawMorHelmet();
 void drawFinHelmet();
 
-void drawCylinderTube(double x, double y, double z, double dx, double dy, double dz, double th);
+void drawCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th);
 void drawCone(double x, double y, double z, double dx, double dy, double dz, double th);
 void drawHalfCone(double x, double y, double z, double dx, double dy, double dz, double th);
 void Vertex(double th, double ph, int tex);
-void ball(double x, double y, double z, double r, int tex);
+void ball(double x, double y, double z, double r, double tilt, int axis, int tex);
 
 /* Glut Functions */
 void project();
