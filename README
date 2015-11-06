@@ -1,1 +1,11 @@
-Working with OpenGL
+CSCI 4229 Computer Graphics
+Fall 2015
+
+Taylor Andrews
+
+**Key Bindings**
+  w/s        Move in first person
+  a/d        Rotate camera in first person
+  arrows     Change view angle
+  0          Reset view angle
+  ESC        Exit
