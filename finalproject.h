@@ -48,20 +48,6 @@ extern int emission;
 /* Draw the Scene */
 void drawScene();
 
-/* Body Parts */
-void drawMorHelmet();
-void drawFinHelmet();
-
-/* Shapes and Objects */
-void drawCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
-void drawCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th);
-void drawPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, int tex, int dir);
-void drawCone(double x, double y, double z, double dx, double dy, double dz, double th);
-void drawHalfCone(double x, double y, double z, double dx, double dy, double dz, double th);
-void Vertex(double th, double ph, int tex);
-void halfBall(double x, double y, double z, double r, double tilt, int axis, int tex);
-void ball(double x, double y, double z, double r, double tilt, int axis, int tex);
-
 /* Glut Functions */
 void project();
 void display();
