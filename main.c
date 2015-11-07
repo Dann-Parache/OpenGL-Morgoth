@@ -33,7 +33,7 @@ int move = 1; // Move the light
 int distance = 5;  // Light distance
 int local = 0;  // Local Viewer Model
 int emission = 0;  // Emission intensity (%)
-int ambient = 30;  // Ambient intensity (%)
+int ambient = 40;  // Ambient intensity (%)
 int diffuse = 100;  // Diffuse intensity (%)
 int specular = 1;  // Specular intensity (%)
 //int shininess = 0;  // Shininess (power of two)
@@ -41,7 +41,7 @@ float shinyvec[1];    // Shininess (value)
 int zh  = 90;  // Light azimuth
 
 /* Textures */
-unsigned int textures[3]; // Texture names
+unsigned int textures[4]; // Texture names
 
 /* Set the projection */
 void project()
@@ -70,6 +70,7 @@ void project()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); // Erase the window and clear the depth buffer
+    glClearColor(.3, .3, .3, 0);
     glEnable(GL_DEPTH_TEST); // Enable Z-buffering
     glLoadIdentity(); // Reset the transformation matrix
 
@@ -286,8 +287,10 @@ int main(int argc, char* argv[])
     glutIdleFunc(idle);
 
     /* Load Textures */
-    textures[0] = LoadTexBMP("metal2-jpg.bmp");
-    textures[1] = LoadTexBMP("jem-jpg.bmp");
+    textures[0] = LoadTexBMP("gray_armor.bmp");
+    textures[1] = LoadTexBMP("opal.bmp");
+    textures[2] = LoadTexBMP("mor-eye.bmp");
+    textures[3] = LoadTexBMP("gold.bmp");
 
     ErrCheck("init"); // Error checking
 

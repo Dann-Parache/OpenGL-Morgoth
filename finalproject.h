@@ -41,21 +41,25 @@ extern vect camera;
 extern int fp; // First person mode toggle
 
 extern float shinyvec[1];
-extern unsigned int textures[3];
+extern unsigned int textures[4];
 
 extern int emission;
 
 /* Draw the Scene */
 void drawScene();
 
-/* Shapes and Objects */
+/* Body Parts */
 void drawMorHelmet();
 void drawFinHelmet();
 
-void drawCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th);
+/* Shapes and Objects */
+void drawCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
+void drawCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th);
+void drawPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, int tex, int dir);
 void drawCone(double x, double y, double z, double dx, double dy, double dz, double th);
 void drawHalfCone(double x, double y, double z, double dx, double dy, double dz, double th);
 void Vertex(double th, double ph, int tex);
+void halfBall(double x, double y, double z, double r, double tilt, int axis, int tex);
 void ball(double x, double y, double z, double r, double tilt, int axis, int tex);
 
 /* Glut Functions */
