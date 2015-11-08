@@ -32,7 +32,7 @@ extern double dim; // Dimension of orthogonal box
 extern int fp; // First person mode toggle
 
 extern float shinyvec[1];
-extern unsigned int textures[4];
+extern unsigned int textures[10];
 
 extern int emission;
 
@@ -41,13 +41,17 @@ void drawFin();
 
 /* Body Parts */
 void drawFinHelmet();
+void drawFinHelmetGrate(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
+void drawFinNeck();
+void drawFinLeftHand();
+void drawFinRightHand();
 
 /* Shapes and Objects */
 void drawFinCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
-void drawFinCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th);
+void drawFinPinchedTube(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex);
+void drawFinCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th, int tex);
 void drawFinPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, double amount, int tex, int dir);
-void drawFinCone(double x, double y, double z, double dx, double dy, double dz, double th);
-void drawFinHalfCone(double x, double y, double z, double dx, double dy, double dz, double th);
+void drawFinCone(double x, double y, double z, double dx, double dy, double dz, double th, int tex);
 void finVertex(double th, double ph, int tex);
 void finHalfBall(double x, double y, double z, double r, double tilt, int axis, int tex);
 void finBall(double x, double y, double z, double r, double tilt, int axis, int tex);
