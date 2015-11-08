@@ -9,7 +9,7 @@
  *  ESC    Exit
  */
 
-#include "finalproject.h"
+#include "scene.h"
 
 /* Global Variables */
 /* Window Settings */
@@ -41,7 +41,7 @@ float shinyvec[1];    // Shininess (value)
 int zh  = 90;  // Light azimuth
 
 /* Textures */
-unsigned int textures[4]; // Texture names
+unsigned int textures[10]; // Texture names
 
 /* Set the projection */
 void project()
@@ -70,7 +70,7 @@ void project()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); // Erase the window and clear the depth buffer
-    glClearColor(.3, .3, .3, 0);
+    //glClearColor(.3, .3, .3, 0);
     glEnable(GL_DEPTH_TEST); // Enable Z-buffering
     glLoadIdentity(); // Reset the transformation matrix
 
@@ -287,10 +287,13 @@ int main(int argc, char* argv[])
     glutIdleFunc(idle);
 
     /* Load Textures */
-    textures[0] = LoadTexBMP("gray_armor.bmp");
-    textures[1] = LoadTexBMP("opal.bmp");
+    //textures[0] = LoadTexBMP("gray_armor.bmp");
+    textures[0] = LoadTexBMP("steel.bmp");
+    textures[1] = LoadTexBMP("gem.bmp");
     textures[2] = LoadTexBMP("mor-eye.bmp");
     textures[3] = LoadTexBMP("gold.bmp");
+    textures[4] = LoadTexBMP("white_fabric.bmp");
+
 
     ErrCheck("init"); // Error checking
 
