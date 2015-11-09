@@ -45,10 +45,13 @@ void drawFinHelmetGrate(double x, double y, double z, double dx, double dy, doub
 void drawFinNeck();
 void drawFinLeftHand();
 void drawFinRightHand();
+void drawFinFinger(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
+void drawFinThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
 
 /* Shapes and Objects */
-void drawFinCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
+void drawFinCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex);
 void drawFinPinchedTube(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex);
+void drawFinCappedCylinder(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex, int end); 
 void drawFinCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th, int tex);
 void drawFinPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, double amount, int tex, int dir);
 void drawFinCone(double x, double y, double z, double dx, double dy, double dz, double th, int tex);
