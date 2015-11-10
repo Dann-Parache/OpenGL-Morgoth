@@ -37,7 +37,7 @@ extern unsigned int textures[10];
 extern int emission;
 
 /* Draw the Scene */
-void drawFin();
+void drawFin(double x, double y, double z, double dx, double dy, double dz);
 
 /* Body Parts */
 // Head
@@ -50,6 +50,9 @@ void drawFinRightHand();
 void drawFinFinger(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
 void drawFinLeftThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
 void drawFinRightThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
+// Arms
+void drawFinRightArm();
+void drawFinLeftArm();
 
 /* Shapes and Objects */
 void drawFinCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex);

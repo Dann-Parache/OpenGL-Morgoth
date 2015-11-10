@@ -32,22 +32,35 @@ extern double dim; // Dimension of orthogonal box
 extern int fp; // First person mode toggle
 
 extern float shinyvec[1];
-extern unsigned int textures[4];
+extern unsigned int textures[10];
 
 extern int emission;
 
 /* Draw the Scene */
-void drawMor();
+void drawMor(double x, double y, double z, double dx, double dy, double dz);
 
 /* Body Parts */
+// Head
 void drawMorHelmet();
+void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
+void drawMorNeck();
+// Hands
+void drawMorLeftHand();
+void drawMorRightHand();
+void drawMorFinger(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
+void drawMorLeftThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
+void drawMorRightThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
+// Arms
+void drawMorRightArm();
+void drawMorLeftArm();
 
 /* Shapes and Objects */
-void drawMorCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
-void drawMorCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th);
+void drawMorCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex);
+void drawMorPinchedTube(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex);
+void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex, int end); 
+void drawMorCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th, int tex);
 void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, double amount, int tex, int dir);
-void drawMorCone(double x, double y, double z, double dx, double dy, double dz, double th);
-void drawMorHalfCone(double x, double y, double z, double dx, double dy, double dz, double th);
+void drawMorCone(double x, double y, double z, double dx, double dy, double dz, double th, int tex);
 void morVertex(double th, double ph, int tex);
 void morHalfBall(double x, double y, double z, double r, double tilt, int axis, int tex);
 void morBall(double x, double y, double z, double r, double tilt, int axis, int tex);

@@ -13,15 +13,16 @@ extern unsigned int textures[10];
 
 /* Draw the Scene */
 void drawScene() {
+
     glPushMatrix();
-    glTranslated(1, 0, 0);
-    glScaled(1, 1, 1);
-        //drawMor();
+    //glTranslated(-1, 1, 0);
+    //glScaled(1, 1, 1);
+        drawMor(-2.5, 0.8, -1.1, 1, 1, 1);
     glPopMatrix();
 
     glPushMatrix();
-    glTranslated(0, 0, 0);
-    glScaled(16, 16, 16);
-        drawFin();
+    //glTranslated(0, -1, 0);
+    //glScaled(5, 5, 5);
+        drawFin(2.5, 0.8, -1.1, 7.5, 7.5, 7.5);
     glPopMatrix();
 }

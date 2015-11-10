@@ -69,6 +69,8 @@ void project()
 /* Draw the scene */
 void display()
 {
+    int err; // For error checking
+
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); // Erase the window and clear the depth buffer
     //glClearColor(.3, .3, .3, 0);
     glEnable(GL_DEPTH_TEST); // Enable Z-buffering
@@ -130,11 +132,30 @@ void display()
     /* Draw the Scene */
     drawScene();
 
+    glBegin(GL_LINES);
+      glVertex3d(0,0,0);
+      glVertex3d(0+5,0,0);
+      glVertex3d(0,0,0);
+      glVertex3d(0,0+5,0);
+      glVertex3d(0,0,0);
+      glVertex3d(0,0,0+5);
+      glEnd();
+      //  Label axes
+      glRasterPos3d(0+5,0,0);
+      Print("X");
+      glRasterPos3d(0,0+5,0);
+      Print("Y");
+      glRasterPos3d(0,0,0+5);
+      Print("Z");
+
     glDisable(GL_BLEND);
     glDisable(GL_LIGHTING); // Done lighting, disable it
 
+    /* Error Checking */
+    err = glGetError();
+    if (err) fprintf(stderr, "ERROR: %s [%s]\n", gluErrorString(err), "display");
+
     /* Render the scene */
-    ErrCheck("display");
     glFlush();
     glutSwapBuffers();
 }
@@ -273,6 +294,8 @@ void reshape(int width, int height)
 /* Start Glut */
 int main(int argc, char* argv[])
 {
+    int err; // For error checking
+
     /* Initialize Window */
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH); // Ask for z buffering
@@ -288,14 +311,16 @@ int main(int argc, char* argv[])
 
     /* Load Textures */
     //textures[0] = LoadTexBMP("gray_armor.bmp");
-    textures[0] = LoadTexBMP("steel.bmp");
+    textures[0] = LoadTexBMP("steel.bmp"); // Primary Mor Armor Texture
     textures[1] = LoadTexBMP("gem.bmp");
-    textures[2] = LoadTexBMP("mor-eye.bmp");
-    textures[3] = LoadTexBMP("gold.bmp");
+    textures[2] = LoadTexBMP("mor-eye.bmp"); // Eye Texture
+    textures[3] = LoadTexBMP("steel.bmp"); // Primary Fin Armor Texture 
     textures[4] = LoadTexBMP("white_fabric.bmp");
+    textures[5] = LoadTexBMP("leather.bmp"); // Fin Gauntlet Texture
 
-
-    ErrCheck("init"); // Error checking
+    /* Error Checking */
+    err = glGetError();
+    if (err) fprintf(stderr, "ERROR: %s [%s]\n", gluErrorString(err), "init");
 
     glutMainLoop(); // Start glut
     return 0;

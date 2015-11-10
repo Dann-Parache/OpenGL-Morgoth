@@ -10,28 +10,148 @@ extern float shinyvec[1];
 extern unsigned int textures[10];
 
 /* Draw the Figure */
-void drawFin() 
+void drawFin(double x, double y, double z, double dx, double dy, double dz) 
 {
+    double head_scaleX = dx;
+    double head_scaleY = dy;
+    double head_scaleZ = dz;
+
+    double head_posX = x;
+    double head_posY = y;
+    double head_posZ = z;
+
+    double lefthand_posX = head_posX+.25*head_scaleX;
+    double lefthand_posY = head_posY-.55*head_scaleY;
+    double lefthand_posZ = head_posZ;
+    double lefthand_scaleX = head_scaleX/2;
+    double lefthand_scaleY = head_scaleY/2;
+    double lefthand_scaleZ = head_scaleZ/2;
+
+    double righthand_posX = head_posX-.25*head_scaleX;
+    double righthand_posY = head_posY-.55*head_scaleY;
+    double righthand_posZ = head_posZ;
+    double righthand_scaleX = head_scaleX/2;
+    double righthand_scaleY = head_scaleY/2;
+    double righthand_scaleZ = head_scaleZ/2;
+
+    /* Head and Neck */
     glPushMatrix();
-    glTranslated(.5, 0, 0);
-    glScaled(1, 1, 1);
-        //drawFinHelmet();
-        //drawFinNeck();
+    glTranslated(head_posX, head_posY, head_posZ);
+    glScaled(head_scaleX, head_scaleY, head_scaleZ);
+        drawFinHelmet();
+        drawFinNeck();
     glPopMatrix();
 
+
+    // Enable face culling to improve performance
+    glEnable(GL_CULL_FACE);
+
+    /* Left Hand and Arm */
     glPushMatrix();
-    glTranslated(.2, 0, 0);
-    glScaled(1, 1, 1);
-    //glRotated(180, 0, 1, 0);
+    glTranslated(lefthand_posX, lefthand_posY, lefthand_posZ);
+    glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
+    glRotated(90, 0, 1, 0);
         drawFinLeftHand();
     glPopMatrix();
 
     glPushMatrix();
-    glTranslated(-.2, 0, 0);
-    glScaled(1, 1, 1);
+    glTranslated(lefthand_posX, lefthand_posY+.15*lefthand_scaleY, lefthand_posZ);
+    glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
+    glRotated(180, 0, 0, 1);
+    glRotated(270, 0, 1, 0);
+        drawFinLeftArm();
+    glPopMatrix();
+
+    /* Right Hand and Arm */
+    glPushMatrix();
+    glTranslated(righthand_posX, righthand_posY, righthand_posZ);
+    glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
     //glRotated(180, 0, 1, 0);
         drawFinRightHand();
     glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(righthand_posX, righthand_posY+.15*righthand_scaleY, righthand_posZ);
+    glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
+    glRotated(180, 0, 0, 1);
+    glRotated(90, 0, 1, 0);
+        drawFinRightArm();
+    glPopMatrix();
+
+    glDisable(GL_CULL_FACE);
+}
+
+/* Draw the Left Arm */
+void drawFinLeftArm()
+{
+    double radius = .075;
+    double height = .1;
+    double xpos = 0;
+    double ypos = 0;
+    double zpos = 0;
+
+    double elbow_radius = .08;
+    double shoulder_radius = .1;
+
+    double xtilt = 0;
+    double ztilt = -1;
+
+    double amount = 360;
+    double pinch_factor = .4;   
+ 
+    /*Forearm */
+    //glColor3f(.37, .15, .12);
+    drawFinPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
+    drawFinCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 5); // Makes Model Water Tight
+    glColor3f(1, 1, 1);
+    drawFinCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 3);
+
+    /* Elbow */
+    finBall(xpos, ypos-3*height, zpos, elbow_radius, 0, 0, 3);
+
+    /* Upper Arm */
+    drawFinCylinderTube(xpos, ypos-4*height-elbow_radius, zpos, radius-.01, height*1.9, radius-.01, amount, 0, xtilt, ztilt, 3);
+
+    /* Shoulder */
+    finBall(xpos+xtilt/10, ypos-6*height-elbow_radius, zpos+ztilt/10, shoulder_radius, 0, 0, 3);
+
+}
+
+/* Draw the Right Arm */
+// TO-DO Animate this
+void drawFinRightArm()
+{
+    double radius = .075;
+    double height = .1;
+    double xpos = 0;
+    double ypos = 0;
+    double zpos = 0;
+
+    double elbow_radius = .08;
+    double shoulder_radius = .1;
+
+    double xtilt = 0;
+    double ztilt = -1;
+
+    double amount = 360;
+    double pinch_factor = .4;   
+ 
+    /*Forearm */
+    //glColor3f(.37, .15, .12);
+    drawFinPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
+    drawFinCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 5); // Makes Model Water Tight
+    glColor3f(1, 1, 1);
+    drawFinCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 3);
+
+    /* Elbow */
+    finBall(xpos, ypos-3*height, zpos, elbow_radius, 0, 0, 3);
+
+    /* Upper Arm */
+    drawFinCylinderTube(xpos, ypos-4*height-elbow_radius, zpos, radius-.01, height*1.9, radius-.01, amount, 0, xtilt, ztilt, 3);
+
+    /* Shoulder */
+    finBall(xpos+xtilt/10, ypos-6*height-elbow_radius, zpos+ztilt/10, shoulder_radius, 0, 0, 3);
+
 }
 
 /* Draw the Hand that isn't holding the sword */
@@ -56,18 +176,20 @@ void drawFinLeftHand()
     double ztilt;
     double tilt;
 
-    glColor3f(1, 1, 1);
+    int tex = 5;
+
+    //glColor3f(.37, .15, .12);
 
     /* Wrist */
     glPushMatrix();
-    glScaled(.5, .5, .2);
-        finBall(xpos, ypos+height+.04, zpos, wrist_radius, 0, 0, 3);
+    glScaled(.5, .5, .4);
+        finBall(xpos, ypos+height+.04, zpos, wrist_radius, 0, 0, tex);
     glPopMatrix();
 
     /* Palm */
     glPushMatrix();
     glScaled(.9, .5, .3);
-        drawFinPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 3);
+        drawFinPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, tex-2);
         //drawFinCylinderCap(xpos, ypos, zpos, radius, ypos-height, radius, 0, -1);
     glPopMatrix();
 
@@ -75,55 +197,55 @@ void drawFinLeftHand()
     //Thumb
     glPushMatrix();
     glScaled(.3, .3, .25);
-        finBall(xpos-2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, 3);
+        finBall(xpos-2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, tex-2);
     glPopMatrix();
 
     //Fingers
     glPushMatrix();
     glScaled(.295, .295, .295);
-        finBall(xpos-.15, ypos-height-finger_radius, zpos, finger_radius, 0, 0, 3);
+        finBall(xpos-.15, ypos-height-finger_radius, zpos, finger_radius, 0, 0, tex-2);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.33, .3, .33);
-        finBall(xpos-.05, ypos-height-finger_radius, zpos, finger_radius, 0, 0, 3);
+        finBall(xpos-.05, ypos-height-finger_radius, zpos, finger_radius, 0, 0, tex-2);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.3, .3, .3);
-        finBall(xpos+.05, ypos-height-finger_radius, zpos, finger_radius, 0, 0, 3);
+        finBall(xpos+.05, ypos-height-finger_radius, zpos, finger_radius, 0, 0, tex-2);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.285, .285, .285);
-        finBall(xpos+.15, ypos-height-finger_radius, zpos, finger_radius, 0, 0, 3);
+        finBall(xpos+.15, ypos-height-finger_radius, zpos, finger_radius, 0, 0, tex-2);
     glPopMatrix();
 
     /* Fingers */
     glPushMatrix();
     glScaled(.3, .49, .3);
         tilt = -2.5;
-        drawFinFinger(xpos-.15, ypos-height-finger_radius, zpos, finger_radius-.02, finger_height, finger_radius-.02, 0, 0, tilt, 3);
+        drawFinFinger(xpos-.15, ypos-height-finger_radius, zpos, finger_radius-.02, finger_height, finger_radius-.02, 0, 0, tilt, tex);
     glPopMatrix();
 
     // Middle (should be slightly longer)
     glPushMatrix();
     glScaled(.3, .51, .3);
         tilt = -2.5;
-        drawFinFinger(xpos-.05, ypos-height-finger_radius, zpos, finger_radius-.01, finger_height, finger_radius-.01, 0, 0, tilt, 3);
+        drawFinFinger(xpos-.05, ypos-height-finger_radius, zpos, finger_radius-.01, finger_height, finger_radius-.01, 0, 0, tilt, tex);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.3, .49, .3);
         tilt = -2.5;
-        drawFinFinger(xpos+.05, ypos-height-finger_radius, zpos, finger_radius-.01, finger_height, finger_radius-.01, 0, 0, tilt, 3);
+        drawFinFinger(xpos+.05, ypos-height-finger_radius, zpos, finger_radius-.01, finger_height, finger_radius-.01, 0, 0, tilt, tex);
     glPopMatrix();
 
     // Pinky (should be slightly smaller)
     glPushMatrix();
     glScaled(.2, .45, .2);
         tilt = -2.5;
-        drawFinFinger(xpos+.15*.3/.2, ypos-height-finger_radius, zpos, finger_radius-.02, finger_height, finger_radius-.02, 0, 0, tilt, 3);
+        drawFinFinger(xpos+.15*.3/.2, ypos-height-finger_radius, zpos, finger_radius-.02, finger_height, finger_radius-.02, 0, 0, tilt, tex);
     glPopMatrix();
 
     /* Thumb */
@@ -132,7 +254,7 @@ void drawFinLeftHand()
     glRotated(90, 0, 0, 1);
     xtilt = 1.3;
     ztilt = 1.5;
-        drawFinLeftThumb(xpos+.01, ypos+.35, zpos-.13, thumb_radius, thumb_height, thumb_radius, 0, xtilt, ztilt, 3);
+        drawFinLeftThumb(xpos+.01, ypos+.35, zpos-.13, thumb_radius, thumb_height, thumb_radius, 0, xtilt, ztilt, tex);
     glPopMatrix();
 }
 
@@ -158,18 +280,20 @@ void drawFinRightHand()
     double ztilt;
     double tilt;
 
+    int tex = 5;
+
     glColor3f(1, 1, 1);
 
     /* Wrist */
     glPushMatrix();
-    glScaled(.5, .5, .2);
-        finBall(xpos, ypos+height+.04, zpos, wrist_radius, 0, 0, 3);
+    glScaled(.5, .5, .4);
+        finBall(xpos, ypos+height+.04, zpos, wrist_radius, 0, 0, tex);
     glPopMatrix();
 
     /* Palm */
     glPushMatrix();
     glScaled(.9, .5, .3);
-        drawFinPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 3);
+        drawFinPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, tex-2);
         //drawFinCylinderCap(xpos, ypos, zpos, radius, ypos-height, radius, 0, -1);
     glPopMatrix();
 
@@ -177,55 +301,55 @@ void drawFinRightHand()
     //Thumb
     glPushMatrix();
     glScaled(.3, .3, .25);
-        finBall(xpos+2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, 3);
+        finBall(xpos+2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, tex-2);
     glPopMatrix();
 
     //Fingers
     glPushMatrix();
     glScaled(.285, .285, .285);
-        finBall(xpos-.15, ypos-height-finger_radius, zpos, finger_radius, 0, 0, 3);
+        finBall(xpos-.15, ypos-height-finger_radius, zpos, finger_radius, 0, 0, tex-2);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.3, .3, .3);
-        finBall(xpos-.05, ypos-height-finger_radius, zpos, finger_radius, 0, 0, 3);
+        finBall(xpos-.05, ypos-height-finger_radius, zpos, finger_radius, 0, 0, tex-2);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.33, .3, .33);
-        finBall(xpos+.05, ypos-height-finger_radius, zpos, finger_radius, 0, 0, 3);
+        finBall(xpos+.05, ypos-height-finger_radius, zpos, finger_radius, 0, 0, tex-2);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.295, .295, .295);
-        finBall(xpos+.15, ypos-height-finger_radius, zpos, finger_radius, 0, 0, 3);
+        finBall(xpos+.15, ypos-height-finger_radius, zpos, finger_radius, 0, 0, tex-2);
     glPopMatrix();
 
     /* Fingers */
     glPushMatrix();
     glScaled(.3, .49, .3);
         tilt = -2.5;
-        drawFinFinger(xpos+.15, ypos-height-finger_radius, zpos, finger_radius-.02, finger_height, finger_radius-.02, 0, 0, tilt, 3);
+        drawFinFinger(xpos+.15, ypos-height-finger_radius, zpos, finger_radius-.02, finger_height, finger_radius-.02, 0, 0, tilt, tex);
     glPopMatrix();
 
     // Middle (should be slightly longer)
     glPushMatrix();
     glScaled(.3, .51, .3);
         tilt = -2.5;
-        drawFinFinger(xpos+.05, ypos-height-finger_radius, zpos, finger_radius-.01, finger_height, finger_radius-.01, 0, 0, tilt, 3);
+        drawFinFinger(xpos+.05, ypos-height-finger_radius, zpos, finger_radius-.01, finger_height, finger_radius-.01, 0, 0, tilt, tex);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.3, .49, .3);
         tilt = -2.5;
-        drawFinFinger(xpos-.05, ypos-height-finger_radius, zpos, finger_radius-.01, finger_height, finger_radius-.01, 0, 0, tilt, 3);
+        drawFinFinger(xpos-.05, ypos-height-finger_radius, zpos, finger_radius-.01, finger_height, finger_radius-.01, 0, 0, tilt, tex);
     glPopMatrix();
 
     // Pinky (should be slightly smaller)
     glPushMatrix();
     glScaled(.2, .45, .2);
         tilt = -2.5;
-        drawFinFinger(xpos-.15*.3/.2, ypos-height-finger_radius, zpos, finger_radius-.02, finger_height, finger_radius-.02, 0, 0, tilt, 3);
+        drawFinFinger(xpos-.15*.3/.2, ypos-height-finger_radius, zpos, finger_radius-.02, finger_height, finger_radius-.02, 0, 0, tilt, tex);
     glPopMatrix();
 
     /* Thumb */
@@ -235,7 +359,7 @@ void drawFinRightHand()
     glRotated(180, 1, 0, 0);
     xtilt = 1.3;
     ztilt = 1.5;
-        drawFinRightThumb(xpos+.01, ypos+.35, zpos+.13, thumb_radius, thumb_height, thumb_radius, 0, xtilt, ztilt, 3);
+        drawFinRightThumb(xpos+.01, ypos+.35, zpos+.13, thumb_radius, thumb_height, thumb_radius, 0, xtilt, ztilt, tex);
     glPopMatrix();
 }
 
