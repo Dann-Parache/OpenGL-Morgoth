@@ -40,13 +40,16 @@ extern int emission;
 void drawFin();
 
 /* Body Parts */
+// Head
 void drawFinHelmet();
 void drawFinHelmetGrate(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
 void drawFinNeck();
+// Hands
 void drawFinLeftHand();
 void drawFinRightHand();
 void drawFinFinger(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
-void drawFinThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
+void drawFinLeftThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
+void drawFinRightThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
 
 /* Shapes and Objects */
 void drawFinCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex);
