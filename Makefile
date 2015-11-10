@@ -1,7 +1,7 @@
 # Makefile for Graphics Project
 # Created by: Taylor Andrews
 
-EXE=finalproject
+EXE=taan7753fp
 
 # Main target
 all: $(EXE)
@@ -28,7 +28,7 @@ CSCIx229.a:fatal.o loadtexbmp.o print.o project.o errcheck.o object.o
 	gcc -c $(CFLG) $<
 
 #  Link
-finalproject:finalproject.o main.o CSCIx229.a
+taan7753fp:mor.o fin.o scene.o main.o CSCIx229.a
 	gcc -O3 -o $@ $^   $(LIBS)
 
 #  Clean
