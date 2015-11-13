@@ -44,6 +44,8 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz);
 void drawFinHelmet();
 void drawFinHelmetGrate(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
 void drawFinNeck();
+// Body
+void drawFinTorso();
 // Hands
 void drawFinLeftHand();
 void drawFinRightHand();

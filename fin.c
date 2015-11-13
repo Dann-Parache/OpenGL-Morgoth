@@ -20,6 +20,10 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz)
     double head_posY = y;
     double head_posZ = z;
 
+    double torso_posX = head_posX;
+    double torso_posY = head_posY-.2*head_scaleY;
+    double torso_posZ = head_posZ;
+
     double lefthand_posX = head_posX+.25*head_scaleX;
     double lefthand_posY = head_posY-.55*head_scaleY;
     double lefthand_posZ = head_posZ;
@@ -79,6 +83,35 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz)
     glPopMatrix();
 
     glDisable(GL_CULL_FACE);
+
+    /* Body */
+    glPushMatrix();
+    glTranslated(torso_posX, torso_posY, torso_posZ);
+    //glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
+    //glRotated(180, 0, 0, 1);
+    //glRotated(90, 0, 1, 0);
+        drawFinTorso();
+    glPopMatrix();
+}
+
+/* Draw the Torso */
+void drawFinTorso() 
+{
+    double radius = .5;
+    double height = .4;
+    double xpos = 0;
+    double ypos = 0;
+    double zpos = 0;
+
+    int axis = 1;
+
+    glColor3f(1, 1, 1);
+
+    /* Shoulder Portion */
+    glPushMatrix();
+    glScaled(3, 1, 1);
+    finHalfBall(xpos, ypos+height, zpos, radius, -90, axis, 3);
+    glPopMatrix();
 }
 
 /* Draw the Left Arm */
@@ -455,7 +488,7 @@ void drawFinRightThumb(double x, double y, double z, double dx, double dy, doubl
 /* Draw Fin's Neck */
 void drawFinNeck() 
 {
-    double radius = .085;
+    double radius = .065;
     double height = .04;
     double xpos = 0;
     double ypos = -0.06;
@@ -568,7 +601,7 @@ void drawFinHelmet()
 /* Draw a Cylinder Tube */
 void drawFinCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex) 
 {
-    double j;
+    int j;
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -592,7 +625,7 @@ void drawFinCylinderTube(double x, double y, double z, double dx, double dy, dou
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= amount; j++) 
+    for (j = 0; j <= (int) amount; j++) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -614,7 +647,7 @@ void drawFinCylinderTube(double x, double y, double z, double dx, double dy, dou
 /* Draw a Cylinder with a Rounded Cap */
 void drawFinCappedCylinder(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex, int end) 
 {
-    double j;
+    int j;
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -638,7 +671,7 @@ void drawFinCappedCylinder(double x, double y, double z, double dx, double dy, d
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= amount; j++) 
+    for (j = 0; j <= (int) amount; j++) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -702,7 +735,7 @@ void drawFinCylinderCap(double x, double y, double z, double dx, double dy, doub
     glTexCoord2f(0.5,0.5); 
     glVertex3d(0.0, 1, 0.0);
 
-    for(i = 0.0; i <= 360; i+=10) {
+    for(i = 0; i <= 360; i+=10) {
         if (tex != -1)
             glTexCoord2f(-0.5*Cos(i)+0.5, 0.5*Sin(i)+0.5);
         glVertex3d(Cos(i), 1, Sin(i));
@@ -717,7 +750,7 @@ void drawFinCylinderCap(double x, double y, double z, double dx, double dy, doub
 /* Pinched Tube for the hands */ 
 void drawFinPinchedTube(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex)
 {
-    double j;
+    int j;
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -741,7 +774,7 @@ void drawFinPinchedTube(double x, double y, double z, double dx, double dy, doub
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= amount; j++) 
+    for (j = 0; j <= (int) amount; j++) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -770,7 +803,7 @@ void drawFinPinchedTube(double x, double y, double z, double dx, double dy, doub
 /* A Cylinder with a Pointy Tip for the Helmet */
 void drawFinPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, double amount, int tex, int dir)
 {
-    double j;
+    int j;
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -794,7 +827,7 @@ void drawFinPointedCylinder(double x, double y, double z, double dx, double dy, 
 
     /* Draw the Cylinder */
     glBegin(GL_TRIANGLE_STRIP);
-    for (j = 0; j <= amount; j+=1) 
+    for (j = 0; j <= (int) amount; j+=1) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -822,7 +855,7 @@ void drawFinPointedCylinder(double x, double y, double z, double dx, double dy, 
 /* Draw a cone at (x,y,z) scaled by dx,dy,dz and rotated by th */
 void drawFinCone(double x, double y, double z, double dx, double dy, double dz, double th, int tex) 
 {
-    double i; 
+    int i; 
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -850,7 +883,7 @@ void drawFinCone(double x, double y, double z, double dx, double dy, double dz, 
     glNormal3d(0,1,0);  
     glTexCoord2f(1.0, 1.0); glVertex3d(0.0, 1, 0.0);
 
-    for(i = 0.0; i <= 360; i+=10) 
+    for(i = 0; i <= 360; i+=10) 
     {
         const float tc = (i / (float) 360);
         glNormal3d(Cos(i), 0.0, Sin(i));
@@ -890,7 +923,7 @@ void drawFinHelmetGrate(double x, double y, double z, double dx, double dy, doub
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= amount; j+=1) 
+    for (j = 0; j <= (int) amount; j+=1) 
     {
         const float tc = (3*j / (float) 360);
 
