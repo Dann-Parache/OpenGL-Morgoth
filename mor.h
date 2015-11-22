@@ -37,13 +37,15 @@ extern unsigned int textures[10];
 extern int emission;
 
 /* Draw the Scene */
-void drawMor(double x, double y, double z, double dx, double dy, double dz);
+void drawMor(double x, double y, double z, double dx, double dy, double dz, double t);
 
 /* Body Parts */
 // Head
 void drawMorHelmet();
 void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
 void drawMorNeck();
+// Body
+void drawMorTorso();
 // Hands
 void drawMorLeftHand();
 void drawMorRightHand();

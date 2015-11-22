@@ -10,7 +10,7 @@ extern float shinyvec[1];
 extern unsigned int textures[10];
 
 /* Draw the Figure */
-void drawMor(double x, double y, double z, double dx, double dy, double dz) 
+void drawMor(double x, double y, double z, double dx, double dy, double dz, double t) 
 {
     double head_scaleX = dx;
     double head_scaleY = dy;
@@ -19,6 +19,10 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz)
     double head_posX = x;
     double head_posY = y;
     double head_posZ = z;
+
+    double torso_posX = head_posX;
+    double torso_posY = head_posY-1.5*head_scaleY;
+    double torso_posZ = head_posZ;
 
     double lefthand_posX = head_posX+2*head_scaleX;
     double lefthand_posY = head_posY-4.5*head_scaleY;
@@ -34,6 +38,11 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz)
     double righthand_scaleY = head_scaleY*4;
     double righthand_scaleZ = head_scaleZ*4;
 
+    // Set up animation
+    t = 180 - t;
+    t = t > 0 ? -t : t;
+    double armtheta = -t;
+
     /* Head and Neck */
     glPushMatrix();
     glTranslated(head_posX, head_posY, head_posZ);
@@ -41,7 +50,6 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz)
         drawMorHelmet();
         drawMorNeck();
     glPopMatrix();
-
 
     // Enable face culling to improve performance
     glEnable(GL_CULL_FACE);
@@ -64,9 +72,15 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz)
 
     /* Right Hand and Arm */
     glPushMatrix();
+    // Arm animation
+    glTranslated(righthand_posX+righthand_scaleX*.11, righthand_posY+righthand_scaleY*(.82), righthand_posZ+righthand_scaleZ*0);
+    glRotated(-1*armtheta, 1, 0, 0);
+    glTranslated(-righthand_posX-righthand_scaleX*.11, -righthand_posY-righthand_scaleY*(.82), -righthand_posZ-righthand_scaleZ*0);
+
+    glPushMatrix();
     glTranslated(righthand_posX, righthand_posY, righthand_posZ);
     glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
-    //glRotated(180, 0, 1, 0);
+    glRotated(270, 0, 1, 0);
         drawMorRightHand();
     glPopMatrix();
 
@@ -78,7 +92,49 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz)
         drawMorRightArm();
     glPopMatrix();
 
+    glPopMatrix(); // End arm animation transformation
+
     glDisable(GL_CULL_FACE);
+
+    /* Body */
+    glPushMatrix();
+    glTranslated(torso_posX, torso_posY, torso_posZ);
+    //glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
+    //glRotated(180, 0, 0, 1);
+    //glRotated(90, 0, 1, 0);
+        drawMorTorso();
+    glPopMatrix();
+}
+
+/* Draw the Torso */
+void drawMorTorso() 
+{
+    double radius = .52;
+    double height = .4;
+    double xpos = 0;
+    double ypos = 0;
+    double zpos = 0;
+
+    double pinch_factor = .53;
+    double amount = 360;
+
+    int axis = 1;
+
+    glColor3f(.2, .2, .2);
+
+    /* Shoulder Portion */
+    glPushMatrix();
+    glScaled(3, 1, 1.5);
+    morHalfBall(xpos, ypos+height, zpos, radius, -90, axis, 0);
+    glPopMatrix();
+
+    /* Main Body */
+    glPushMatrix();
+    glScaled(3, 1, 1.5);
+    glRotated(180, 1, 0, 0);
+        drawMorPinchedTube(xpos, ypos+height, zpos, radius, 2*height+.05, radius, amount, pinch_factor, 0, 0);
+        drawMorCylinderTube(xpos, ypos+4*height, zpos, radius-(1-pinch_factor)*radius, 2*height, radius-(1-pinch_factor)*radius, amount, 0, 0, 0, 0);
+    glPopMatrix();
 }
 
 /* Draw the Left Arm */
@@ -91,7 +147,7 @@ void drawMorLeftArm()
     double zpos = 0;
 
     double elbow_radius = .08;
-    double shoulder_radius = .1;
+    double shoulder_radius = .11;
 
     double xtilt = 0;
     double ztilt = -1;
@@ -105,16 +161,16 @@ void drawMorLeftArm()
     drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
     drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 5); // Makes Model Water Tight
     glColor3f(.2, .2, .2);
-    drawMorCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 3);
+    drawMorCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 0);
 
     /* Elbow */
-    morBall(xpos, ypos-3*height, zpos, elbow_radius, 0, 0, 3);
+    morBall(xpos, ypos-3*height, zpos, elbow_radius, 0, 0, 0);
 
     /* Upper Arm */
-    drawMorCylinderTube(xpos, ypos-4*height-elbow_radius, zpos, radius-.01, height*1.9, radius-.01, amount, 0, xtilt, ztilt, 3);
+    drawMorCylinderTube(xpos, ypos-4*height-elbow_radius, zpos, radius-.01, height*1.9, radius-.01, amount, 0, xtilt, ztilt, 0);
 
     /* Shoulder */
-    morBall(xpos+xtilt/10, ypos-6*height-elbow_radius, zpos+ztilt/10, shoulder_radius, 0, 0, 3);
+    morBall(xpos+xtilt/10, ypos-6*height-elbow_radius, zpos+ztilt/10, shoulder_radius, 0, 0, 0);
 
 }
 
@@ -129,7 +185,7 @@ void drawMorRightArm()
     double zpos = 0;
 
     double elbow_radius = .08;
-    double shoulder_radius = .1;
+    double shoulder_radius = .11;
 
     double xtilt = 0;
     double ztilt = -1;
@@ -143,16 +199,16 @@ void drawMorRightArm()
     drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
     drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 5); // Makes Model Water Tight
     glColor3f(.2, .2, .2);
-    drawMorCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 3);
+    drawMorCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 0);
 
     /* Elbow */
-    morBall(xpos, ypos-3*height, zpos, elbow_radius, 0, 0, 3);
+    morBall(xpos, ypos-3*height, zpos, elbow_radius, 0, 0, 0);
 
     /* Upper Arm */
-    drawMorCylinderTube(xpos, ypos-4*height-elbow_radius, zpos, radius-.01, height*1.9, radius-.01, amount, 0, xtilt, ztilt, 3);
+    drawMorCylinderTube(xpos, ypos-4*height-elbow_radius, zpos, radius-.01, height*1.9, radius-.01, amount, 0, xtilt, ztilt, 0);
 
     /* Shoulder */
-    morBall(xpos+xtilt/10, ypos-6*height-elbow_radius, zpos+ztilt/10, shoulder_radius, 0, 0, 3);
+    morBall(xpos+xtilt/10, ypos-6*height-elbow_radius, zpos+ztilt/10, shoulder_radius, 0, 0, 0);
 
 }
 
@@ -180,7 +236,7 @@ void drawMorLeftHand()
 
     int tex = 5;
 
-    //glColor3f(.37, .15, .12);
+    glColor3f(1, 1, 1);
 
     /* Wrist */
     glPushMatrix();
@@ -193,7 +249,7 @@ void drawMorLeftHand()
     /* Palm */
     glPushMatrix();
     glScaled(.9, .5, .3);
-        drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, tex-2);
+        drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 0);
         //drawMorCylinderCap(xpos, ypos, zpos, radius, ypos-height, radius, 0, -1);
     glPopMatrix();
 
@@ -201,28 +257,28 @@ void drawMorLeftHand()
     //Thumb
     glPushMatrix();
     glScaled(.3, .3, .25);
-        morBall(xpos-2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, tex-2);
+        morBall(xpos-2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, 0);
     glPopMatrix();
 
     //Fingers
     glPushMatrix();
     glScaled(.295, .295, .295);
-        morBall(xpos-.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, tex-2);
+        morBall(xpos-.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.33, .3, .33);
-        morBall(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, tex-2);
+        morBall(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.3, .3, .3);
-        morBall(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, tex-2);
+        morBall(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.285, .285, .285);
-        morBall(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, tex-2);
+        morBall(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
     glColor3f(1, 1, 1);
@@ -300,7 +356,7 @@ void drawMorRightHand()
     /* Palm */
     glPushMatrix();
     glScaled(.9, .5, .3);
-        drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, tex-2);
+        drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 0);
         //drawMorCylinderCap(xpos, ypos, zpos, radius, ypos-height, radius, 0, -1);
     glPopMatrix();
 
@@ -308,28 +364,28 @@ void drawMorRightHand()
     //Thumb
     glPushMatrix();
     glScaled(.3, .3, .25);
-        morBall(xpos+2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, tex-2);
+        morBall(xpos+2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, 0);
     glPopMatrix();
 
     //Fingers
     glPushMatrix();
     glScaled(.285, .285, .285);
-        morBall(xpos-.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, tex-2);
+        morBall(xpos-.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.3, .3, .3);
-        morBall(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, tex-2);
+        morBall(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.33, .3, .33);
-        morBall(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, tex-2);
+        morBall(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
     glPushMatrix();
     glScaled(.295, .295, .295);
-        morBall(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, tex-2);
+        morBall(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
     glColor3f(1, 1, 1);
@@ -464,17 +520,18 @@ void drawMorRightThumb(double x, double y, double z, double dx, double dy, doubl
 /* Draw Mor's Neck */
 void drawMorNeck() 
 {
-    double radius = .085;
-    double height = .04;
+    double radius = .4;
+    double height = .25;
     double xpos = 0;
-    double ypos = -0.06;
-    double zpos = -0.01;
+    double ypos = -0.5;
+    double zpos = -0.1;
 
     double amount = 360;
     double pinch_factor = .9;
 
-    glColor3f(1, 1, 1);
+    glColor3f(.3, .3, .3);
     drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 4);
+    glColor3f(.2, .2, .2);
 }
 
 /* Draw the Smaller Fighter's Helmet */
@@ -505,7 +562,7 @@ void drawMorHelmet()
 
     /* Draw Main Helmet */
     glPushMatrix();
-    morHalfBall(xpos, ypos+height, zpos, radius, -90, axis, 0);
+    morHalfBall(xpos, ypos+height-.05, zpos, radius, -90, axis, 0);
     glPopMatrix();
     
     // Large cylindrical outside 
@@ -578,20 +635,20 @@ void drawMorHelmet()
     glBegin(GL_QUAD_STRIP);
         glVertex3d(xpos-radius*.79, ypos-height, zpos+.3);
         glVertex3d(xpos-radius*.79, ypos+(height/3), zpos+.3);
-        glVertex3d(xpos+radius*.8, ypos-height, zpos+.3);
-        glVertex3d(xpos+radius*.8, ypos+(height/3), zpos+.3);
+        glVertex3d(xpos+radius*.7, ypos-height, zpos+.3);
+        glVertex3d(xpos+radius*.7, ypos+(height/3), zpos+.3);
     glEnd();
 
     /* Seal Helmet */
     glColor3f(0, 0, 0);
     drawMorCylinderCap(xpos, ypos, zpos, radius, ypos+height-2*height/3, radius, 0, -1);
-    drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, -1);
+    drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 0);
 }
 
 /* Draw a Cylinder Tube */
 void drawMorCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex) 
 {
-    double j;
+    int j;
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -615,7 +672,7 @@ void drawMorCylinderTube(double x, double y, double z, double dx, double dy, dou
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= amount; j++) 
+    for (j = 0; j <= (int) amount; j+=10) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -637,7 +694,7 @@ void drawMorCylinderTube(double x, double y, double z, double dx, double dy, dou
 /* Draw a Cylinder with a Rounded Cap */
 void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex, int end) 
 {
-    double j;
+    int j;
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -661,7 +718,7 @@ void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, d
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= amount; j++) 
+    for (j = 0; j <= (int) amount; j+=10) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -725,7 +782,7 @@ void drawMorCylinderCap(double x, double y, double z, double dx, double dy, doub
     glTexCoord2f(0.5,0.5); 
     glVertex3d(0.0, 1, 0.0);
 
-    for(i = 0.0; i <= 360; i+=10) {
+    for(i = 0; i <= 360; i+=10) {
         if (tex != -1)
             glTexCoord2f(-0.5*Cos(i)+0.5, 0.5*Sin(i)+0.5);
         glVertex3d(Cos(i), 1, Sin(i));
@@ -740,7 +797,7 @@ void drawMorCylinderCap(double x, double y, double z, double dx, double dy, doub
 /* Pinched Tube for the hands */ 
 void drawMorPinchedTube(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex)
 {
-    double j;
+    int j;
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -764,7 +821,7 @@ void drawMorPinchedTube(double x, double y, double z, double dx, double dy, doub
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= amount; j++) 
+    for (j = 0; j <= (int) amount; j+=10) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -793,7 +850,7 @@ void drawMorPinchedTube(double x, double y, double z, double dx, double dy, doub
 /* A Cylinder with a Pointy Tip for the Helmet */
 void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, double amount, int tex, int dir)
 {
-    double j;
+    int j;
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -817,7 +874,7 @@ void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, 
 
     /* Draw the Cylinder */
     glBegin(GL_TRIANGLE_STRIP);
-    for (j = 0; j <= amount; j+=1) 
+    for (j = 0; j <= (int) amount; j+=10) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -845,7 +902,7 @@ void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, 
 /* Draw a cone at (x,y,z) scaled by dx,dy,dz and rotated by th */
 void drawMorCone(double x, double y, double z, double dx, double dy, double dz, double th, int tex) 
 {
-    double i; 
+    int i; 
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -873,7 +930,7 @@ void drawMorCone(double x, double y, double z, double dx, double dy, double dz, 
     glNormal3d(0,1,0);  
     glTexCoord2f(1.0, 1.0); glVertex3d(0.0, 1, 0.0);
 
-    for(i = 0.0; i <= 360; i+=10) 
+    for(i = 0; i <= 360; i+=10) 
     {
         const float tc = (i / (float) 360);
         glNormal3d(Cos(i), 0.0, Sin(i));
@@ -913,7 +970,7 @@ void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, doub
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= amount; j+=1) 
+    for (j = 0; j <= (int) amount; j+=10) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -993,7 +1050,7 @@ void morHalfBall(double x, double y, double z, double r, double tilt, int axis, 
     }
 
     // Bands of latitude
-    int inc = 1;
+    int inc = 10;
     for (ph=0;ph<90;ph+=inc)
     {
         glBegin(GL_QUAD_STRIP);
@@ -1045,7 +1102,7 @@ void morBall(double x, double y, double z, double r, double tilt, int axis, int 
     }
 
     // Bands of latitude
-    int inc = 1;
+    int inc = 10;
     for (ph=-90;ph<90;ph+=inc)
     {
         glBegin(GL_QUAD_STRIP);
