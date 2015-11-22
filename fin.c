@@ -10,7 +10,7 @@ extern float shinyvec[1];
 extern unsigned int textures[10];
 
 /* Draw the Figure */
-void drawFin(double x, double y, double z, double dx, double dy, double dz) 
+void drawFin(double x, double y, double z, double dx, double dy, double dz, double t) 
 {
     double head_scaleX = dx;
     double head_scaleY = dy;
@@ -31,12 +31,24 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz)
     double lefthand_scaleY = head_scaleY/2;
     double lefthand_scaleZ = head_scaleZ/2;
 
-    double righthand_posX = head_posX-.25*head_scaleX;
-    double righthand_posY = head_posY-.55*head_scaleY;
-    double righthand_posZ = head_posZ;
-    double righthand_scaleX = head_scaleX/2;
-    double righthand_scaleY = head_scaleY/2;
-    double righthand_scaleZ = head_scaleZ/2;
+    double rightshoulder_posX = head_posX-.25*head_scaleX;
+    double rightshoulder_posY = head_posY-.475*head_scaleY;
+    double rightshoulder_posZ = head_posZ;
+    double rightshoulder_scaleX = head_scaleX/2;
+    double rightshoulder_scaleY = head_scaleY/2;
+    double rightshoulder_scaleZ = head_scaleZ/2;
+
+    // Set up animation
+    t = t < 180 ? -t : t;
+    double armtheta = -t;
+
+    // Enable anti-aliasing to smooth lines
+    glEnable(GL_POLYGON_SMOOTH);
+    glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
+    glEnable( GL_LINE_SMOOTH );
+    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     /* Head and Neck */
     glPushMatrix();
@@ -45,7 +57,6 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz)
         drawFinHelmet();
         drawFinNeck();
     glPopMatrix();
-
 
     // Enable face culling to improve performance
     glEnable(GL_CULL_FACE);
@@ -68,21 +79,27 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz)
 
     /* Right Hand and Arm */
     glPushMatrix();
-    glTranslated(righthand_posX, righthand_posY, righthand_posZ);
-    glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
+    // Arm animation
+    glTranslated(rightshoulder_posX+rightshoulder_scaleX*.11, rightshoulder_posY+rightshoulder_scaleY*(.66), rightshoulder_posZ+rightshoulder_scaleZ*0);
+    glRotated(-1*armtheta, 1, 0, 0);
+    glTranslated(-rightshoulder_posX-rightshoulder_scaleX*.11, -rightshoulder_posY-rightshoulder_scaleY*(.66), -rightshoulder_posZ-rightshoulder_scaleZ*0);
+
+    glPushMatrix();
+    glTranslated(rightshoulder_posX, rightshoulder_posY-.14*rightshoulder_scaleY, rightshoulder_posZ);
+    glScaled(rightshoulder_scaleX, rightshoulder_scaleY, rightshoulder_scaleZ);
     //glRotated(180, 0, 1, 0);
         drawFinRightHand();
     glPopMatrix();
 
     glPushMatrix();
-    glTranslated(righthand_posX, righthand_posY+.15*righthand_scaleY, righthand_posZ);
-    glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
+    glTranslated(rightshoulder_posX, rightshoulder_posY, rightshoulder_posZ);
+    glScaled(rightshoulder_scaleX, rightshoulder_scaleY, rightshoulder_scaleZ);
     glRotated(180, 0, 0, 1);
     glRotated(90, 0, 1, 0);
         drawFinRightArm();
     glPopMatrix();
 
-    glDisable(GL_CULL_FACE);
+    glPopMatrix(); // End arm animation transformation
 
     /* Body */
     glPushMatrix();
@@ -92,6 +109,25 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz)
     //glRotated(90, 0, 1, 0);
         drawFinTorso();
     glPopMatrix();
+
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_POLYGON_SMOOTH);
+    glDisable(GL_BLEND);
+
+    /* Legs */
+    // Left Leg
+    glPushMatrix();
+    glTranslated(lleg_posX, lleg_posY, lleg_posZ);
+        drawFinLeftLeg();
+    glPopMatrix();
+
+    // Right Leg
+    glPushMatrix();
+    glTranslated(rleg_posX, rleg_posY, rleg_posZ);
+        drawFinRightLeg();
+    glPopMatrix();
+
+    glDisable(GL_CULL_FACE);
 }
 
 /* Draw the Torso */
@@ -103,15 +139,99 @@ void drawFinTorso()
     double ypos = 0;
     double zpos = 0;
 
+    double hip_radius = 0;
+
+    double pinch_factor = .55;
+    double amount = 360;
+
     int axis = 1;
 
     glColor3f(1, 1, 1);
 
     /* Shoulder Portion */
     glPushMatrix();
-    glScaled(3, 1, 1);
+    glScaled(3, 1, 1.5);
     finHalfBall(xpos, ypos+height, zpos, radius, -90, axis, 3);
     glPopMatrix();
+
+    /* Main Body */
+    glPushMatrix();
+    glScaled(3, 1, 1.5);
+    glRotated(180, 1, 0, 0);
+        hip_radius = radius-(1-pinch_factor)*radius;
+        drawFinPinchedTube(xpos, ypos+height, zpos, radius, 2*height+.05, radius, amount, pinch_factor, 0, 3);
+        drawFinCylinderTube(xpos, ypos+3.5*height, zpos, hip_radius, 1.5*height, hip_radius, amount, 0, 0, 0, 3);
+    glPopMatrix();
+
+    // The skirt is not air-tight, require face culling off
+    glDisable(GL_CULL_FACE);
+
+    /* Skirt */
+    glPushMatrix();
+    glScaled(3, 1, 1.5);
+        pinch_factor = .6;
+        hip_radius += hip_radius*pinch_factor;
+        //hip_radius = hip_radius+(1-pinch_factor)*hip_radius;
+        drawFinSkirt(xpos, ypos-6.5*height, zpos, hip_radius, 2*height, hip_radius, amount, pinch_factor, 0, 4);
+
+        glColor3f(1, 1, 1);
+        drawFinCylinderCap(xpos, ypos-6.8*height, zpos, hip_radius-.06, -1.5*height, hip_radius-.06, 0, -1);
+    glPopMatrix();
+
+    // Turn face culling back on
+    glEnable(GL_CULL_FACE);
+}
+
+/* Draw the skirt portion of the armor */
+void drawFinSkirt(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex)
+{
+    int j;
+
+    /* Enable textures */
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+    
+    /* Begin Lighting */
+    float white[] = {1,1,1,1};
+    float black[] = {0,0,0,1};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
+    glPushMatrix();
+
+    /* Transform Cylinder */
+    glTranslated(x,y,z);
+    glRotated(th,0,0,1);
+    glScaled(dx,dy,dz);
+    
+    glBindTexture(GL_TEXTURE_2D,textures[tex]);
+
+    /* Draw the Cylinder */
+    glBegin(GL_QUAD_STRIP);
+    for (j = 0; j <= (int) amount; j+=10) 
+    {
+        double k = j / 10;
+        k = (int) k % 2 == 0 ? 1 : 0;
+
+        const float tc = (3*j / (float) 360);
+
+        double x = Cos(j);
+        double y = 1;
+        double z = Sin(j);
+
+        glNormal3d(Cos(j), 0.0, Sin(j));
+
+        glTexCoord2f(-tc, 0.0); glVertex3d(x, -y-k, z);
+
+        glNormal3d(Cos(j), 0.0, Sin(j));
+        glTexCoord2f(-tc, 1.0); glVertex3d(x*pinch_factor, y, z*pinch_factor);
+
+    }
+    glEnd();
+
+    glPopMatrix();
+    glDisable(GL_TEXTURE_2D); 
 }
 
 /* Draw the Left Arm */
@@ -124,7 +244,7 @@ void drawFinLeftArm()
     double zpos = 0;
 
     double elbow_radius = .08;
-    double shoulder_radius = .1;
+    double shoulder_radius = .11;
 
     double xtilt = 0;
     double ztilt = -1;
@@ -161,7 +281,7 @@ void drawFinRightArm()
     double zpos = 0;
 
     double elbow_radius = .08;
-    double shoulder_radius = .1;
+    double shoulder_radius = .11;
 
     double xtilt = 0;
     double ztilt = -1;
@@ -498,7 +618,7 @@ void drawFinNeck()
     double pinch_factor = .9;
 
     glColor3f(1, 1, 1);
-    drawFinPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 4);
+    drawFinPinchedTube(xpos, ypos-.01, zpos, radius, height, radius, amount, pinch_factor, 0, 4);
 }
 
 /* Draw the Smaller Fighter's Helmet */
@@ -523,11 +643,11 @@ void drawFinHelmet()
 
     int dir = 0;
 
-    glColor3f(.5, .5, .5);
+    glColor3f(1, 1, 1);
 
     /* Draw Main Helmet */
     glPushMatrix();
-        finHalfBall(xpos, ypos+height, zpos, radius, -90, axis, 3);
+        finHalfBall(xpos, ypos+height-.01, zpos, radius, -90, axis, 3);
     glPopMatrix();
     
     // Large cylindrical outside 
@@ -592,10 +712,11 @@ void drawFinHelmet()
     glPopMatrix();
 
     /* Seal Helmet */
+    glColor3f(0, 0, 0);
+    drawFinCylinderCap(xpos, ypos, zpos, radius-.001, ypos+height-2*height/3, radius-.001, 0, -1);
+    drawFinCylinderCap(xpos, ypos, zpos, radius-.001, ypos, radius-.001, 0, -1);
     glColor3f(1, 1, 1);
-    drawFinCylinderCap(xpos, ypos, zpos, radius, ypos+height-2*height/3, radius, 0, -1);
-    drawFinCylinderCap(xpos, ypos, zpos, radius, ypos, radius, 0, -1);
-    drawFinCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, -1);
+    drawFinCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 3);
 }
 
 /* Draw a Cylinder Tube */
@@ -625,7 +746,7 @@ void drawFinCylinderTube(double x, double y, double z, double dx, double dy, dou
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= (int) amount; j++) 
+    for (j = 0; j <= (int) amount; j+=10) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -671,7 +792,7 @@ void drawFinCappedCylinder(double x, double y, double z, double dx, double dy, d
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= (int) amount; j++) 
+    for (j = 0; j <= (int) amount; j+=10) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -774,7 +895,7 @@ void drawFinPinchedTube(double x, double y, double z, double dx, double dy, doub
 
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
-    for (j = 0; j <= (int) amount; j++) 
+    for (j = 0; j <= (int) amount; j+=10) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -827,7 +948,7 @@ void drawFinPointedCylinder(double x, double y, double z, double dx, double dy, 
 
     /* Draw the Cylinder */
     glBegin(GL_TRIANGLE_STRIP);
-    for (j = 0; j <= (int) amount; j+=1) 
+    for (j = 0; j <= (int) amount; j+=5) 
     {
         const float tc = (3*j / (float) 360);
 
@@ -1003,7 +1124,7 @@ void finHalfBall(double x, double y, double z, double r, double tilt, int axis, 
     }
 
     // Bands of latitude
-    int inc = 1;
+    int inc = 10;
     for (ph=0;ph<90;ph+=inc)
     {
         glBegin(GL_QUAD_STRIP);
@@ -1055,7 +1176,7 @@ void finBall(double x, double y, double z, double r, double tilt, int axis, int 
     }
 
     // Bands of latitude
-    int inc = 1;
+    int inc = 10;
     for (ph=-90;ph<90;ph+=inc)
     {
         glBegin(GL_QUAD_STRIP);
