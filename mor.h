@@ -55,6 +55,9 @@ void drawMorRightThumb(double x, double y, double z, double dx, double dy, doubl
 // Arms
 void drawMorRightArm();
 void drawMorLeftArm();
+//Legs 
+void drawMorLeftLeg();
+void drawMorRightLeg();
 
 /* Shapes and Objects */
 void drawMorCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex);
