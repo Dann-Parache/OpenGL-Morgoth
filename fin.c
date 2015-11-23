@@ -38,6 +38,14 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz, doub
     double rightshoulder_scaleY = head_scaleY/2;
     double rightshoulder_scaleZ = head_scaleZ/2;
 
+    double rleg_posX = torso_posX-.07*head_scaleX;
+    double rleg_posY = torso_posY-.6*head_scaleY; 
+    double rleg_posZ = torso_posZ;
+
+    double lleg_posX = torso_posX+.07*head_scaleX; 
+    double lleg_posY = torso_posY-.6*head_scaleY; 
+    double lleg_posZ = torso_posZ;
+
     // Set up animation
     t = t < 180 ? -t : t;
     double armtheta = -t;
@@ -127,7 +135,132 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz, doub
         drawFinRightLeg();
     glPopMatrix();
 
-    glDisable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE); // MOVE DOWN YA HEAR
+
+}
+
+/* Draw the Left Leg */
+void drawFinLeftLeg()
+{
+    double radius = .48;
+    double height = .9;
+    double xpos = 0;
+    double ypos = 0;
+    double zpos = 0;
+
+    double amount = 360;
+    double pinch_factor = .9;
+
+    double knee_radius = .5;
+
+    /* Thigh */
+    glPushMatrix();
+    glScaled(1, 1, 1);
+    glRotated(180, 1, 0, 0);
+        drawFinPinchedTube(xpos, ypos+height, zpos, radius, height, radius, amount, pinch_factor, 0, 3);
+    glPopMatrix();
+
+    /* Knee */
+    glPushMatrix();
+        finBall(xpos, ypos-1.8*height, zpos, knee_radius, 0, 0, 3);
+    glPopMatrix();
+
+    /* Shin */
+    glPushMatrix();
+        drawFinCylinderTube(xpos, ypos-2.5*height, zpos, radius*.8, .35*height, radius*.8, amount, 0, 0, 0, 3);
+    glPopMatrix();
+
+    /* Boot */
+    glPushMatrix();
+    glRotated(180, 1, 0, 0);
+        pinch_factor = .5;
+        drawFinPinchedTube(xpos, ypos+3.7*height, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
+        drawFinCylinderCap(xpos, ypos+3.7*height-height, zpos, radius, ypos, radius, 0, 5);
+    glPopMatrix();
+
+    // Ankle
+    glPushMatrix();
+        finBall(xpos, ypos-4.5*height, zpos, radius*.75, 0, 0, 5);
+    glPopMatrix();
+
+    // Heel and Toe
+    glPushMatrix();
+        drawFinCylinderTube(xpos, ypos-5*height, zpos, radius*.6, .25*height, radius*.6, amount, 0, 0, 0, 5);
+        drawFinCylinderCap(xpos, ypos-5.25*height, zpos, radius*.6, ypos, radius*.6, 0, 5);
+
+        drawFinCylinderTube(xpos, ypos-5*height, zpos+height, radius*.45, .25*height, radius*.45, amount, 0, 0, 0, 5);
+        drawFinCylinderCap(xpos, ypos-5.25*height, zpos+height, radius*.45, ypos, radius*.45, 0, 5);
+    glPopMatrix();
+    
+    // Foot
+    glPushMatrix();
+    glRotated(90, 1, 0, 0);
+        radius = .25;
+        drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
+        finBall(xpos, ypos+.5+.5*height, zpos+4.9*height, radius, -90, 1, 5);
+    glPopMatrix();
+}
+
+/* Draw the Right Leg */
+void drawFinRightLeg()
+{
+    double radius = .48;
+    double height = .9;
+    double xpos = 0;
+    double ypos = 0;
+    double zpos = 0;
+
+    double amount = 360;
+    double pinch_factor = .9;
+
+    double knee_radius = .5;
+
+    /* Thigh */
+    glPushMatrix();
+    glRotated(180, 1, 0, 0);
+        drawFinPinchedTube(xpos, ypos+height, zpos, radius, height, radius, amount, pinch_factor, 0, 3);
+    glPopMatrix();
+
+    /* Knee */
+    glPushMatrix();
+        finBall(xpos, ypos-1.8*height, zpos, knee_radius, 0, 0, 3);
+    glPopMatrix();
+
+    /* Shin */
+    glPushMatrix();
+        drawFinCylinderTube(xpos, ypos-2.5*height, zpos, radius*.8, .35*height, radius*.8, amount, 0, 0, 0, 3);
+    glPopMatrix();
+
+    /* Boot */
+    // Leg Portion
+    glPushMatrix();
+    glRotated(180, 1, 0, 0);
+        pinch_factor = .5;
+        drawFinPinchedTube(xpos, ypos+3.7*height, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
+        drawFinCylinderCap(xpos, ypos+3.7*height-height, zpos, radius, ypos, radius, 0, 5);
+    glPopMatrix();
+
+    // Ankle
+    glPushMatrix();
+        finBall(xpos, ypos-4.5*height, zpos, radius*.75, 0, 0, 5);
+    glPopMatrix();
+
+    // Heel and Toe
+    glPushMatrix();
+        drawFinCylinderTube(xpos, ypos-5*height, zpos, radius*.6, .25*height, radius*.6, amount, 0, 0, 0, 5);
+        drawFinCylinderCap(xpos, ypos-5.25*height, zpos, radius*.6, ypos, radius*.6, 0, 5);
+
+        drawFinCylinderTube(xpos, ypos-5*height, zpos+height, radius*.45, .25*height, radius*.45, amount, 0, 0, 0, 5);
+        drawFinCylinderCap(xpos, ypos-5.25*height, zpos+height, radius*.45, ypos, radius*.45, 0, 5);
+    glPopMatrix();
+
+    // Foot
+    glPushMatrix();
+    glRotated(90, 1, 0, 0);
+        radius = .25;
+        drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
+        finBall(xpos, ypos+.5+.5*height, zpos+4.9*height, radius, -90, 1, 5);
+    glPopMatrix();
 }
 
 /* Draw the Torso */
@@ -159,7 +292,7 @@ void drawFinTorso()
     glScaled(3, 1, 1.5);
     glRotated(180, 1, 0, 0);
         hip_radius = radius-(1-pinch_factor)*radius;
-        drawFinPinchedTube(xpos, ypos+height, zpos, radius, 2*height+.05, radius, amount, pinch_factor, 0, 3);
+        drawFinPinchedTube(xpos, ypos+1.5*height, zpos, radius, 2.5*height+.05, radius, amount, pinch_factor, 0, 3);
         drawFinCylinderTube(xpos, ypos+3.5*height, zpos, hip_radius, 1.5*height, hip_radius, amount, 0, 0, 0, 3);
     glPopMatrix();
 
@@ -175,7 +308,7 @@ void drawFinTorso()
         drawFinSkirt(xpos, ypos-6.5*height, zpos, hip_radius, 2*height, hip_radius, amount, pinch_factor, 0, 4);
 
         glColor3f(1, 1, 1);
-        drawFinCylinderCap(xpos, ypos-6.8*height, zpos, hip_radius-.06, -1.5*height, hip_radius-.06, 0, -1);
+        drawFinCylinderCap(xpos, ypos-9.5*height, zpos, hip_radius-.06, -1.5*height, hip_radius-.06, 0, -1);
     glPopMatrix();
 
     // Turn face culling back on
@@ -207,6 +340,8 @@ void drawFinSkirt(double x, double y, double z, double dx, double dy, double dz,
     
     glBindTexture(GL_TEXTURE_2D,textures[tex]);
 
+    //glColor3f(0, .2, 0);
+
     /* Draw the Cylinder */
     glBegin(GL_QUAD_STRIP);
     for (j = 0; j <= (int) amount; j+=10) 
@@ -222,7 +357,7 @@ void drawFinSkirt(double x, double y, double z, double dx, double dy, double dz,
 
         glNormal3d(Cos(j), 0.0, Sin(j));
 
-        glTexCoord2f(-tc, 0.0); glVertex3d(x, -y-k, z);
+        glTexCoord2f(-tc, 0.0); glVertex3d(x, -3*y-k, z);
 
         glNormal3d(Cos(j), 0.0, Sin(j));
         glTexCoord2f(-tc, 1.0); glVertex3d(x*pinch_factor, y, z*pinch_factor);
@@ -692,7 +827,7 @@ void drawFinHelmet()
 	glPopMatrix();
 
     /* Draw Back Plane */
-    glColor3f(0, 0, 0);
+    glColor3f(.91, .78, .51);
     glBegin(GL_QUAD_STRIP);
         glVertex3d(xpos-radius*.79, ypos-height, zpos+.05);
         glVertex3d(xpos-radius*.79, ypos+(height/3), zpos+.05);
@@ -712,7 +847,7 @@ void drawFinHelmet()
     glPopMatrix();
 
     /* Seal Helmet */
-    glColor3f(0, 0, 0);
+    glColor3f(.91, .78, .51);
     drawFinCylinderCap(xpos, ypos, zpos, radius-.001, ypos+height-2*height/3, radius-.001, 0, -1);
     drawFinCylinderCap(xpos, ypos, zpos, radius-.001, ypos, radius-.001, 0, -1);
     glColor3f(1, 1, 1);
