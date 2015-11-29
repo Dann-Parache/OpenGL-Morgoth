@@ -46,9 +46,34 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz, doub
     double lleg_posY = torso_posY-.6*head_scaleY; 
     double lleg_posZ = torso_posZ;
 
+    double armtheta = t;
+    double leftarmtheta = t;
+
     // Set up animation
-    t = t < 180 ? -t : t;
-    double armtheta = -t;
+    armtheta = armtheta < 180 ? -armtheta : armtheta;
+
+    // Bind Right Arm
+    if (armtheta >= 340) {
+        armtheta = 340;
+    }
+    if ((armtheta <= 0) && (armtheta >= -20)) {
+        armtheta = -20;
+    }
+
+    // if (armtheta <= -120) {
+    //     armtheta = -120;
+    // }
+    // if ((armtheta >= 0) && (armtheta <= 240)) {
+    //     t = 240;
+    // }
+
+    // Bind Left Arm
+    leftarmtheta /= 10;
+    leftarmtheta = leftarmtheta < 18 ? leftarmtheta : -leftarmtheta;
+
+    if (leftarmtheta < 0) {
+        leftarmtheta = 36 + leftarmtheta;
+    }
 
     // Enable anti-aliasing to smooth lines
     glEnable(GL_POLYGON_SMOOTH);
@@ -62,7 +87,7 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz, doub
     glPushMatrix();
     glTranslated(head_posX, head_posY, head_posZ);
     glScaled(head_scaleX, head_scaleY, head_scaleZ);
-        drawFinHelmet();
+        drawFinHelmet(t);
         drawFinNeck();
     glPopMatrix();
 
@@ -71,41 +96,49 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz, doub
 
     /* Left Hand and Arm */
     glPushMatrix();
-    glTranslated(lefthand_posX, lefthand_posY, lefthand_posZ);
-    glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
-    glRotated(90, 0, 1, 0);
-        drawFinLeftHand();
-    glPopMatrix();
+    // Arm animation
+    glTranslated(rightshoulder_posX+rightshoulder_scaleX*.11, rightshoulder_posY+rightshoulder_scaleY*(.66), rightshoulder_posZ+rightshoulder_scaleZ*0);
+    glRotated(leftarmtheta, 1, 0, 0);
+    glTranslated(-rightshoulder_posX-rightshoulder_scaleX*.11, -rightshoulder_posY-rightshoulder_scaleY*(.66), -rightshoulder_posZ-rightshoulder_scaleZ*0);
+    
+        glPushMatrix();
+        glTranslated(lefthand_posX, lefthand_posY, lefthand_posZ);
+        glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
+        glRotated(90, 0, 1, 0);
+            drawFinLeftHand();
+        glPopMatrix();
 
-    glPushMatrix();
-    glTranslated(lefthand_posX, lefthand_posY+.15*lefthand_scaleY, lefthand_posZ);
-    glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
-    glRotated(180, 0, 0, 1);
-    glRotated(270, 0, 1, 0);
-        drawFinLeftArm();
-    glPopMatrix();
+        glPushMatrix();
+        glTranslated(lefthand_posX, lefthand_posY+.15*lefthand_scaleY, lefthand_posZ);
+        glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
+        glRotated(180, 0, 0, 1);
+        glRotated(270, 0, 1, 0);
+            drawFinLeftArm();
+        glPopMatrix();
+
+    glPopMatrix(); // End arm animation transformation
 
     /* Right Hand and Arm */
     glPushMatrix();
     // Arm animation
     glTranslated(rightshoulder_posX+rightshoulder_scaleX*.11, rightshoulder_posY+rightshoulder_scaleY*(.66), rightshoulder_posZ+rightshoulder_scaleZ*0);
-    glRotated(-1*armtheta, 1, 0, 0);
+    glRotated(armtheta, 1, 0, 0);
     glTranslated(-rightshoulder_posX-rightshoulder_scaleX*.11, -rightshoulder_posY-rightshoulder_scaleY*(.66), -rightshoulder_posZ-rightshoulder_scaleZ*0);
 
-    glPushMatrix();
-    glTranslated(rightshoulder_posX, rightshoulder_posY-.14*rightshoulder_scaleY, rightshoulder_posZ);
-    glScaled(rightshoulder_scaleX, rightshoulder_scaleY, rightshoulder_scaleZ);
-    //glRotated(180, 0, 1, 0);
-        drawFinRightHand();
-    glPopMatrix();
+        glPushMatrix();
+        glTranslated(rightshoulder_posX, rightshoulder_posY-.14*rightshoulder_scaleY, rightshoulder_posZ);
+        glScaled(rightshoulder_scaleX, rightshoulder_scaleY, rightshoulder_scaleZ);
+        //glRotated(180, 0, 1, 0);
+            drawFinRightHand();
+        glPopMatrix();
 
-    glPushMatrix();
-    glTranslated(rightshoulder_posX, rightshoulder_posY, rightshoulder_posZ);
-    glScaled(rightshoulder_scaleX, rightshoulder_scaleY, rightshoulder_scaleZ);
-    glRotated(180, 0, 0, 1);
-    glRotated(90, 0, 1, 0);
-        drawFinRightArm();
-    glPopMatrix();
+        glPushMatrix();
+        glTranslated(rightshoulder_posX, rightshoulder_posY, rightshoulder_posZ);
+        glScaled(rightshoulder_scaleX, rightshoulder_scaleY, rightshoulder_scaleZ);
+        glRotated(180, 0, 0, 1);
+        glRotated(90, 0, 1, 0);
+            drawFinRightArm();
+        glPopMatrix();
 
     glPopMatrix(); // End arm animation transformation
 
@@ -126,7 +159,7 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz, doub
     // Left Leg
     glPushMatrix();
     glTranslated(lleg_posX, lleg_posY, lleg_posZ);
-        drawFinLeftLeg();
+        drawFinLeftLeg(t);
     glPopMatrix();
 
     // Right Leg
@@ -139,8 +172,56 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz, doub
 
 }
 
+/* Draw the Sword */
+void drawFinSword() 
+{
+    double radius = .2;
+    double height = 1;
+    double xpos = 0;
+    double ypos = -2.5;
+    double zpos = 0;
+
+    double amount = 360;
+
+    /* Grip */
+    drawFinCylinderTube(xpos, ypos, zpos, radius, height, radius, amount, 0, 0, 0, 0);
+    drawFinCylinderCap(xpos, ypos-3.5*height, zpos, radius, ypos, radius, 180, 0);
+
+    /* Cross Gaurd */
+    glPushMatrix();
+    glRotated(90, 1, 0, 0);
+        height = .7;
+        ypos += 2.5;
+        drawFinCylinderTube(xpos, ypos, zpos+1.8, radius, height, radius, amount, 0, 0, 0, 0);
+        height = .5;
+        drawFinCone(xpos, ypos+height+.2, zpos+1.8, radius, height, radius, 0, -1);
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotated(90, 1, 0, 0);
+    glRotated(180, 0, 1, 0);
+    glRotated(180, 0, 0, 1);
+        drawFinCone(xpos, ypos+height+.2, zpos-1.8, radius, height, radius, 0, -1);
+    glPopMatrix();
+
+    /* Pommel */
+    glPushMatrix();
+    glScaled(.6, 1, 1);
+        glColor3f(1, 0, 0);
+        radius = .4;
+        finBall(xpos, ypos-7.5*height, zpos, radius, 0, 0, 1);
+    glPopMatrix();
+
+    glColor3f(1, 1, 1); // Reset color to white
+
+    /* Blade */
+    glPushMatrix();
+        drawFinBlade(xpos, ypos+4.2, zpos, 0);
+    glPopMatrix();
+}
+
 /* Draw the Left Leg */
-void drawFinLeftLeg()
+void drawFinLeftLeg(double t)
 {
     double radius = .48;
     double height = .9;
@@ -159,6 +240,15 @@ void drawFinLeftLeg()
     glRotated(180, 1, 0, 0);
         drawFinPinchedTube(xpos, ypos+height, zpos, radius, height, radius, amount, pinch_factor, 0, 3);
     glPopMatrix();
+
+    // Animation
+    t /= 10;
+    t = t > 18 ? 36 - t : t;
+
+    glPushMatrix();
+    glTranslated(3.3*height, -1.75*height, 0);
+    glRotated(t, 1, 0, 0);
+    glTranslated(-3.3*height, 1.75*height, 0);
 
     /* Knee */
     glPushMatrix();
@@ -188,17 +278,25 @@ void drawFinLeftLeg()
         drawFinCylinderTube(xpos, ypos-5*height, zpos, radius*.6, .25*height, radius*.6, amount, 0, 0, 0, 5);
         drawFinCylinderCap(xpos, ypos-5.25*height, zpos, radius*.6, ypos, radius*.6, 0, 5);
 
-        drawFinCylinderTube(xpos, ypos-5*height, zpos+height, radius*.45, .25*height, radius*.45, amount, 0, 0, 0, 5);
-        drawFinCylinderCap(xpos, ypos-5.25*height, zpos+height, radius*.45, ypos, radius*.45, 0, 5);
+        drawFinCylinderTube(xpos, ypos-5*height, zpos+height*1.15, radius*.4, .25*height, radius*.4, amount, 0, 0, 0, 5);
+        drawFinCylinderCap(xpos, ypos-5.25*height, zpos+height*1.15, radius*.4, ypos, radius*.4, 0, 5);
     glPopMatrix();
     
     // Foot
     glPushMatrix();
     glRotated(90, 1, 0, 0);
         radius = .25;
-        drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
-        finBall(xpos, ypos+.5+.5*height, zpos+4.9*height, radius, -90, 1, 5);
+        pinch_factor = .8;
+        //drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
+        glPushMatrix();
+        glRotated(180, 0, 0, 1);
+            drawFinPinchedTube(xpos, ypos-.35, zpos+4.9*height, radius, .5*height, radius, amount, pinch_factor, 0, 5);
+        glPopMatrix();
+        drawFinPinchedTube(xpos, ypos+.9, zpos+4.9*height, radius, .12*height, radius, amount, pinch_factor, 0, 5);
+        finBall(xpos, ypos+.6+.5*height, zpos+4.9*height, radius, -90, 1, 5);
     glPopMatrix();
+
+    glPopMatrix(); // End Animation Transformation
 }
 
 /* Draw the Right Leg */
@@ -250,16 +348,22 @@ void drawFinRightLeg()
         drawFinCylinderTube(xpos, ypos-5*height, zpos, radius*.6, .25*height, radius*.6, amount, 0, 0, 0, 5);
         drawFinCylinderCap(xpos, ypos-5.25*height, zpos, radius*.6, ypos, radius*.6, 0, 5);
 
-        drawFinCylinderTube(xpos, ypos-5*height, zpos+height, radius*.45, .25*height, radius*.45, amount, 0, 0, 0, 5);
-        drawFinCylinderCap(xpos, ypos-5.25*height, zpos+height, radius*.45, ypos, radius*.45, 0, 5);
+        drawFinCylinderTube(xpos, ypos-5*height, zpos+height*1.15, radius*.4, .25*height, radius*.4, amount, 0, 0, 0, 5);
+        drawFinCylinderCap(xpos, ypos-5.25*height, zpos+height*1.15, radius*.4, ypos, radius*.4, 0, 5);
     glPopMatrix();
 
     // Foot
     glPushMatrix();
     glRotated(90, 1, 0, 0);
         radius = .25;
-        drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
-        finBall(xpos, ypos+.5+.5*height, zpos+4.9*height, radius, -90, 1, 5);
+        pinch_factor = .8;
+        //drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
+        glPushMatrix();
+        glRotated(180, 0, 0, 1);
+            drawFinPinchedTube(xpos, ypos-.35, zpos+4.9*height, radius, .5*height, radius, amount, pinch_factor, 0, 5);
+        glPopMatrix();
+        drawFinPinchedTube(xpos, ypos+.9, zpos+4.9*height, radius, .12*height, radius, amount, pinch_factor, 0, 5);
+        finBall(xpos, ypos+.6+.5*height, zpos+4.9*height, radius, -90, 1, 5);
     glPopMatrix();
 }
 
@@ -649,6 +753,19 @@ void drawFinRightHand()
     ztilt = 1.5;
         drawFinRightThumb(xpos+.01, ypos+.35, zpos+.13, thumb_radius, thumb_height, thumb_radius, 0, xtilt, ztilt, tex);
     glPopMatrix();
+
+    glDisable(GL_CULL_FACE); // Weapon is not quite air tight, disable face culling
+
+    /* Weapon */    
+    glPushMatrix();
+    glScaled(.2, .2, .2);
+    glRotated(90, 0, 0, 1);
+    glRotated(180, 1, 0, 0);
+    glTranslated(xpos-.25, ypos+2.6, zpos+.25);
+        drawFinSword();
+    glPopMatrix();
+
+    glEnable(GL_CULL_FACE);
 }
 
 /* Convinience Function to Draw a Finger */
@@ -757,7 +874,7 @@ void drawFinNeck()
 }
 
 /* Draw the Smaller Fighter's Helmet */
-void drawFinHelmet() 
+void drawFinHelmet(double t) 
 {
     double radius = .09;
     double height = .05;
@@ -779,6 +896,15 @@ void drawFinHelmet()
     int dir = 0;
 
     glColor3f(1, 1, 1);
+
+    // Set up animation time
+    t /= 28;
+    t = (int) t % 14;
+    t = t > 7 ? 14 - t : t;
+
+    /* Head Animation*/
+    glPushMatrix();
+    glRotated(-t, 1, 0, 0);
 
     /* Draw Main Helmet */
     glPushMatrix();
@@ -852,6 +978,8 @@ void drawFinHelmet()
     drawFinCylinderCap(xpos, ypos, zpos, radius-.001, ypos, radius-.001, 0, -1);
     glColor3f(1, 1, 1);
     drawFinCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 3);
+
+    glPopMatrix(); // End Head Animation
 }
 
 /* Draw a Cylinder Tube */
@@ -1327,4 +1455,187 @@ void finBall(double x, double y, double z, double r, double tilt, int axis, int 
 
     glPopMatrix();
     glDisable(GL_TEXTURE_2D); 
+}
+
+/* Draw the blade of the sword */
+void drawFinBlade(double x, double y, double z, int tex)
+{
+    int i; 
+    int length = 7; // Length of the sword
+    int width = 1;
+
+    /* Begin Lighting */
+    float white[] = {1,1,1,1};
+    float black[] = {0,0,0,1};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
+    /* Enable textures */
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+
+    glBindTexture(GL_TEXTURE_2D,textures[tex]);
+
+    glPushMatrix();
+    glTranslated(x, y, z); // Apply position transformation
+
+    /* Main Blade */
+    //Front Upper Quarter
+    glPushMatrix();
+    glTranslated(0, 0, -.5);
+    glRotated(30, 0, 1, 0);
+    glRotated(90, 1, 0, 0);
+    glScaled(1, .4, 1);
+        glBegin(GL_TRIANGLE_STRIP);
+
+        glNormal3d(1, 0, 0);
+        for(i = 0; i < length; i++) 
+        {
+            glTexCoord2f(0, 1); glVertex3d(0, width, i);
+            glTexCoord2f(0, 0); glVertex3d(0, 0, i);
+        }
+
+        glEnd();
+    glPopMatrix();
+
+    //Front Lower Quarter
+    glPushMatrix();
+    glTranslated(0, 0, -.5);
+    glRotated(-30, 0, 1, 0);
+    glRotated(90, 1, 0, 0);
+    glScaled(1, .4, 1);
+        glBegin(GL_TRIANGLE_STRIP);
+
+        glNormal3d(-1, 0, 0);
+        for(i = 0; i < length; i++) 
+        {
+            glTexCoord2f(0, 1); glVertex3d(0, width, i);
+            glTexCoord2f(0, 0); glVertex3d(0, 0, i);
+        }
+
+        glEnd();
+    glPopMatrix();
+
+    //Back Upper Quarter
+    glPushMatrix();
+    glTranslated(0, 0, .5);
+    glRotated(30, 0, 1, 0);
+    glRotated(90, 1, 0, 0);
+    glRotated(180, 0, 0, 1);
+    glScaled(1, .4, 1);
+        glBegin(GL_TRIANGLE_STRIP);
+
+        glNormal3d(1, 0, 0);
+        for(i = 0; i < length; i++) 
+        {
+            glTexCoord2f(0, 1); glVertex3d(0, width, i);
+            glTexCoord2f(0, 0); glVertex3d(0, 0, i);
+        }
+
+        glEnd();
+    glPopMatrix();
+
+    //Back Lower Quarter
+    glPushMatrix();
+    glTranslated(0, 0, .5);
+    glRotated(-30, 0, 1, 0);
+    glRotated(90, 1, 0, 0);
+    glRotated(180, 0, 0, 1);
+    glScaled(1, .4, 1);
+        glBegin(GL_TRIANGLE_STRIP);
+
+        glNormal3d(-1, 0, 0);
+        for(i = 0; i < length; i++) 
+        {
+            glTexCoord2f(0, 1); glVertex3d(0, width, i);
+            glTexCoord2f(0, 0); glVertex3d(0, 0, i);
+        }
+
+        glEnd();
+    glPopMatrix();
+
+    // Flat Portion
+    glPushMatrix();
+    glTranslated(.2, -length+1, -.16);
+    glScaled(1, 1, .33);
+        glBegin(GL_QUAD_STRIP);
+
+        glNormal3d(0, 1, 0);
+        for(i = 0; i < length; i++) 
+        {
+            glTexCoord2f(0, 0); glVertex3d(0, 0, 0);
+            glTexCoord2f(1, 0); glVertex3d(0, 0, 1);
+            glTexCoord2f(0, 1); glVertex3d(0, i, 0);
+            glTexCoord2f(1, 1); glVertex3d(0, i, 1);
+        }
+
+        glEnd();
+
+    glPopMatrix();
+
+    // Bottom Flat Portion
+    glPushMatrix();
+    glTranslated(-.2, -length+1, -.16);
+    glScaled(1, 1, .33);
+        glBegin(GL_QUAD_STRIP);
+
+        glNormal3d(0, -1, 0);
+        for(i = 0; i < length; i++) 
+        {
+            glTexCoord2f(0, 0); glVertex3d(0, 0, 0);
+            glTexCoord2f(1, 0); glVertex3d(0, 0, 1);
+            glTexCoord2f(0, 1); glVertex3d(0, i, 0);
+            glTexCoord2f(1, 1); glVertex3d(0, i, 1);
+        }
+
+        glEnd();
+
+    glPopMatrix();
+    glDisable(GL_TEXTURE_2D); 
+
+    /* Blade Tip */
+    drawFinBladeTip(x, 0, 0, 6);
+
+    glPopMatrix();
+}
+
+void drawFinBladeTip(double x, double y, double z, int tex)
+{
+    int i; 
+    int length = 5; // Length of the tip
+    int width = 1;
+
+    /* Begin Lighting */
+    float white[] = {1,1,1,1};
+    float black[] = {0,0,0,1};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+
+    glBindTexture(GL_TEXTURE_2D,textures[tex]);
+
+    glPushMatrix();
+    glTranslated(x, y, z); // Apply position transformation
+    glScaled(.2, .3, .5);
+
+        glBegin(GL_TRIANGLE_FAN);
+     
+        glNormal3d(0,1,0);  
+        glTexCoord2f(1.0, 1.0); glVertex3d(0.0, length, 0.0);
+
+        for(i = 0; i <= 360; i+=10) 
+        {
+            const float tc = (i / (float) 360);
+            glNormal3d(Cos(i), 0.0, Sin(i));
+            glTexCoord2f(-tc, 0.0); glVertex3d(Cos(i), 0, Sin(i));
+        }
+        glEnd();
+
+    glDisable(GL_TEXTURE_2D); 
+
+    glPopMatrix();
 }

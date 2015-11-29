@@ -41,12 +41,16 @@ void drawFin(double x, double y, double z, double dx, double dy, double dz, doub
 
 /* Body Parts */
 // Head
-void drawFinHelmet();
+void drawFinHelmet(double t);
 void drawFinHelmetGrate(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
 void drawFinNeck();
 // Body
 void drawFinTorso();
 void drawFinSkirt(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex);
+// Weapon
+void drawFinSword();
+void drawFinBlade(double x, double y, double z, int tex);
+void drawFinBladeTip(double x, double y, double z, int tex);
 // Hands
 void drawFinLeftHand();
 void drawFinRightHand();
@@ -57,7 +61,7 @@ void drawFinRightThumb(double x, double y, double z, double dx, double dy, doubl
 void drawFinRightArm();
 void drawFinLeftArm();
 //Legs 
-void drawFinLeftLeg();
+void drawFinLeftLeg(double t);
 void drawFinRightLeg();
 
 /* Shapes and Objects */

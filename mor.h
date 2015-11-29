@@ -41,23 +41,25 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz, doub
 
 /* Body Parts */
 // Head
-void drawMorHelmet();
+void drawMorHelmet(double t);
 void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex);
 void drawMorNeck();
 // Body
-void drawMorTorso();
+void drawMorTorso(double t);
 // Hands
 void drawMorLeftHand();
-void drawMorRightHand();
+void drawMorRightHand(double t, double theta);
 void drawMorFinger(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
 void drawMorLeftThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
 void drawMorRightThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex);
+// Weapon
+void drawMorMace(double t);
 // Arms
 void drawMorRightArm();
 void drawMorLeftArm();
 //Legs 
-void drawMorLeftLeg();
-void drawMorRightLeg();
+void drawMorLeftLeg(double t);
+void drawMorRightLeg(double t);
 
 /* Shapes and Objects */
 void drawMorCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex);

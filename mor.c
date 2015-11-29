@@ -46,91 +46,152 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz, doub
     double lleg_posY = torso_posY-3*head_scaleY; 
     double lleg_posZ = torso_posZ;
 
+    double armtheta = t;
+    double leftarmtheta;
+    double legtheta = t;
+    double torsotheta = t;
+
+    torsotheta /= 10;
+    torsotheta = torsotheta > 18 ? 36 - torsotheta : torsotheta;
+
     // Set up animation
-    t = 180 - t;
-    t = t > 0 ? -t : t;
-    double armtheta = -t;
+    armtheta = 180 - armtheta;
+    armtheta = armtheta > 0 ? -armtheta : armtheta;
 
-    /* Head and Neck */
+    if (armtheta > -60) {
+        armtheta = -60;
+        torsotheta = 12; // Restrict the torso movement when the arm is in place
+    }
+
+    leftarmtheta = armtheta;
+    leftarmtheta /= 100;
+
+    /* Body Animation Block */
     glPushMatrix();
-    glTranslated(head_posX, head_posY, head_posZ);
-    glScaled(head_scaleX+.1, head_scaleY+.1, head_scaleZ+.1);
-        drawMorHelmet();
-        drawMorNeck();
-    glPopMatrix();
+    glTranslated(-.5*head_posX, head_posY, head_posZ);
+    glRotated(torsotheta, 0, 1, 0);
+    glTranslated(.5*head_posX, -head_posY, -head_posZ);
 
-    // Enable face culling to improve performance
-    glEnable(GL_CULL_FACE);
+        /* Head and Neck */
+        glPushMatrix();
+        glTranslated(head_posX, head_posY, head_posZ);
+        glScaled(head_scaleX+.1, head_scaleY+.1, head_scaleZ+.1);
+            drawMorHelmet(t);
+            drawMorNeck();
+        glPopMatrix();
 
-    /* Left Hand and Arm */
-    glPushMatrix();
-    glTranslated(lefthand_posX, lefthand_posY, lefthand_posZ);
-    glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
-    glRotated(90, 0, 1, 0);
-        drawMorLeftHand();
-    glPopMatrix();
+        // Enable face culling to improve performance
+        glEnable(GL_CULL_FACE);
 
-    glPushMatrix();
-    glTranslated(lefthand_posX, lefthand_posY+.15*lefthand_scaleY, lefthand_posZ);
-    glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
-    glRotated(180, 0, 0, 1);
-    glRotated(270, 0, 1, 0);
-        drawMorLeftArm();
-    glPopMatrix();
+        /* Left Hand and Arm */
+        glPushMatrix();
+        // Arm animation
+        glTranslated(lefthand_posX-.5, lefthand_posY+6.5, lefthand_posZ);
+        glRotated(-leftarmtheta, 0, 0, 1);
+        glTranslated(-lefthand_posX+.5, -lefthand_posY-6.5, -lefthand_posZ);
 
-    /* Right Hand and Arm */
-    glPushMatrix();
-    // Arm animation
-    glTranslated(righthand_posX+righthand_scaleX*.11, righthand_posY+righthand_scaleY*(.82), righthand_posZ+righthand_scaleZ*0);
-    glRotated(-1*armtheta, 1, 0, 0);
-    glTranslated(-righthand_posX-righthand_scaleX*.11, -righthand_posY-righthand_scaleY*(.82), -righthand_posZ-righthand_scaleZ*0);
+            // Left Hand
+            glPushMatrix();
+            glTranslated(lefthand_posX, lefthand_posY, lefthand_posZ);
+            glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
+            glRotated(90, 0, 1, 0);
+                drawMorLeftHand();
+            glPopMatrix();
 
-    glPushMatrix();
-    glTranslated(righthand_posX, righthand_posY, righthand_posZ);
-    glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
-    glRotated(270, 0, 1, 0);
-        drawMorRightHand();
-    glPopMatrix();
+            // Left Arm
+            glPushMatrix();
+            glTranslated(lefthand_posX, lefthand_posY+.15*lefthand_scaleY, lefthand_posZ);
+            glScaled(lefthand_scaleX, lefthand_scaleY, lefthand_scaleZ);
+            glRotated(180, 0, 0, 1);
+            glRotated(270, 0, 1, 0);
+                drawMorLeftArm();
+            glPopMatrix();
 
-    glPushMatrix();
-    glTranslated(righthand_posX, righthand_posY+.15*righthand_scaleY, righthand_posZ);
-    glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
-    glRotated(180, 0, 0, 1);
-    glRotated(90, 0, 1, 0);
-        drawMorRightArm();
-    glPopMatrix();
+        glPopMatrix(); // End arm animation transformation
 
-    glPopMatrix(); // End arm animation transformation
+        /* Right Hand and Arm */
+        glPushMatrix();
+        // Arm animation
+        glTranslated(righthand_posX+righthand_scaleX*.11, righthand_posY+righthand_scaleY*(.82), righthand_posZ+righthand_scaleZ*0);
+        glRotated(armtheta, 1, 0, 0);
+        glTranslated(-righthand_posX-righthand_scaleX*.11, -righthand_posY-righthand_scaleY*(.82), -righthand_posZ-righthand_scaleZ*0);
 
-    glDisable(GL_CULL_FACE);
+            // Right Hand
+            glPushMatrix();
+            glTranslated(righthand_posX, righthand_posY, righthand_posZ);
+            glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
+            glRotated(270, 0, 1, 0);
+                drawMorRightHand(t, armtheta);
+            glPopMatrix();
 
-    /* Body */
-    glPushMatrix();
-    glTranslated(torso_posX, torso_posY, torso_posZ);
-    //glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
-    //glRotated(180, 0, 0, 1);
-    //glRotated(90, 0, 1, 0);
-        drawMorTorso();
-    glPopMatrix();
+            // Right Arm
+            glPushMatrix();
+            glTranslated(righthand_posX, righthand_posY+.15*righthand_scaleY, righthand_posZ);
+            glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
+            glRotated(180, 0, 0, 1);
+            glRotated(90, 0, 1, 0);
+                drawMorRightArm();
+            glPopMatrix();
+
+        glPopMatrix(); // End arm animation transformation
+
+        glDisable(GL_CULL_FACE);
+
+        /* Body */
+        glPushMatrix();
+        glTranslated(torso_posX, torso_posY, torso_posZ);
+        //glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
+        //glRotated(180, 0, 0, 1);
+        //glRotated(90, 0, 1, 0);
+            drawMorTorso(torsotheta);
+        glPopMatrix();
 
     /* Legs */
+    legtheta /= 10;
+    legtheta = legtheta > 18 ? 36 - legtheta : legtheta;
+
     // Left Leg
     glPushMatrix();
     glScaled(1, 1.25, .85);
     glTranslated(lleg_posX, lleg_posY, lleg_posZ);
-        drawMorLeftLeg();
+    glRotated(legtheta, 0, 1, 0);
+        drawMorLeftLeg(t);
     glPopMatrix();
 
     // Right Leg
     glPushMatrix();
     glScaled(1, 1.25, .85);
     glTranslated(rleg_posX, rleg_posY, rleg_posZ);
-        drawMorRightLeg();
+    glRotated(-10, 0, 1, 0);
+        drawMorRightLeg(t);
+    glPopMatrix();
+
+    glPopMatrix(); // End body animation block
+}
+
+/* Draw the Mace */
+void drawMorMace(double t) 
+{
+    double radius = .2;
+    double height = 4;
+    double xpos = 0;
+    double ypos = -2.5;
+    double zpos = 0;
+
+    double amount = 360;
+
+    drawMorCylinderTube(xpos, ypos, zpos, radius, height, radius, amount, 0, 0, 0, 0);
+    drawMorCylinderCap(xpos, ypos+height, zpos, radius, ypos, radius, 0, 0);
+
+    glPushMatrix();
+    glScaled(1.5, 3, 1);
+    radius = .5;
+        morBall(xpos, (ypos-height)/3, zpos, radius, 0, 0, 0);
     glPopMatrix();
 }
 
 /* Draw the Left Leg */
-void drawMorLeftLeg()
+void drawMorLeftLeg(double t)
 {
     double radius = .48;
     double height = .9;
@@ -142,6 +203,15 @@ void drawMorLeftLeg()
     double pinch_factor = .9;
 
     double knee_radius = .5;
+
+    // Animation
+    // t /= 10;
+    // t = t > 18 ? 36 - t : t;
+
+    glPushMatrix();
+    // glTranslated(3.3*height, -1.75*height, 0);
+    // glRotated(t, 1, 0, 0);
+    // glTranslated(-3.3*height, 1.75*height, 0);
 
     /* Thigh */
     glPushMatrix();
@@ -178,23 +248,31 @@ void drawMorLeftLeg()
         drawMorCylinderTube(xpos, ypos-5*height, zpos, radius*.6, .25*height, radius*.6, amount, 0, 0, 0, 5);
         drawMorCylinderCap(xpos, ypos-5.25*height, zpos, radius*.6, ypos, radius*.6, 0, 5);
 
-        drawMorCylinderTube(xpos, ypos-5*height, zpos+height, radius*.45, .25*height, radius*.45, amount, 0, 0, 0, 5);
-        drawMorCylinderCap(xpos, ypos-5.25*height, zpos+height, radius*.45, ypos, radius*.45, 0, 5);
+        drawMorCylinderTube(xpos, ypos-5*height, zpos+height*1.15, radius*.4, .25*height, radius*.4, amount, 0, 0, 0, 5);
+        drawMorCylinderCap(xpos, ypos-5.25*height, zpos+height*1.15, radius*.4, ypos, radius*.4, 0, 5);
     glPopMatrix();
     
     // Foot
     glPushMatrix();
     glRotated(90, 1, 0, 0);
         radius = .25;
-        drawMorCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
-        morBall(xpos, ypos+.5+.5*height, zpos+4.9*height, radius, -90, 1, 5);
+        pinch_factor = .8;
+        //drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
+        glPushMatrix();
+        glRotated(180, 0, 0, 1);
+            drawMorPinchedTube(xpos, ypos-.35, zpos+4.9*height, radius, .5*height, radius, amount, pinch_factor, 0, 5);
+        glPopMatrix();
+        drawMorPinchedTube(xpos, ypos+.9, zpos+4.9*height, radius, .12*height, radius, amount, pinch_factor, 0, 5);
+        morBall(xpos, ypos+.6+.5*height, zpos+4.9*height, radius, -90, 1, 5);
     glPopMatrix();
+
+    glPopMatrix(); // End animation
 }
 
 /* Draw the Right Leg */
-void drawMorRightLeg()
+void drawMorRightLeg(double t)
 {
- double radius = .48;
+    double radius = .48;
     double height = .9;
     double xpos = 0;
     double ypos = 0;
@@ -204,6 +282,17 @@ void drawMorRightLeg()
     double pinch_factor = .9;
 
     double knee_radius = .5;
+
+    double rot = t;
+
+    // Animation
+    rot /= 80;
+    rot = rot > 2.25 ? 4.5 - rot : rot;
+
+    glPushMatrix();
+    glTranslated(-3.3*height, .4*height, knee_radius);
+    glRotated(rot, 1, 0, 0);
+    glTranslated(3.3*height, -.4*height, -knee_radius);
 
     /* Thigh */
     glPushMatrix();
@@ -240,21 +329,29 @@ void drawMorRightLeg()
         drawMorCylinderTube(xpos, ypos-5*height, zpos, radius*.6, .25*height, radius*.6, amount, 0, 0, 0, 5);
         drawMorCylinderCap(xpos, ypos-5.25*height, zpos, radius*.6, ypos, radius*.6, 0, 5);
 
-        drawMorCylinderTube(xpos, ypos-5*height, zpos+height, radius*.45, .25*height, radius*.45, amount, 0, 0, 0, 5);
-        drawMorCylinderCap(xpos, ypos-5.25*height, zpos+height, radius*.45, ypos, radius*.45, 0, 5);
+        drawMorCylinderTube(xpos, ypos-5*height, zpos+height*1.15, radius*.4, .25*height, radius*.4, amount, 0, 0, 0, 5);
+        drawMorCylinderCap(xpos, ypos-5.25*height, zpos+height*1.15, radius*.4, ypos, radius*.4, 0, 5);
     glPopMatrix();
 
     // Foot
     glPushMatrix();
     glRotated(90, 1, 0, 0);
         radius = .25;
-        drawMorCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
-        morBall(xpos, ypos+.5+.5*height, zpos+4.9*height, radius, -90, 1, 5);
+        pinch_factor = .8;
+        //drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
+        glPushMatrix();
+        glRotated(180, 0, 0, 1);
+            drawMorPinchedTube(xpos, ypos-.35, zpos+4.9*height, radius, .5*height, radius, amount, pinch_factor, 0, 5);
+        glPopMatrix();
+        drawMorPinchedTube(xpos, ypos+.9, zpos+4.9*height, radius, .12*height, radius, amount, pinch_factor, 0, 5);
+        morBall(xpos, ypos+.6+.5*height, zpos+4.9*height, radius, -90, 1, 5);
     glPopMatrix();
+
+    glPopMatrix(); // End Animation
 }
 
 /* Draw the Torso */
-void drawMorTorso() 
+void drawMorTorso(double t) 
 {
     double radius = .52;
     double height = .4;
@@ -287,7 +384,7 @@ void drawMorTorso()
         radius = radius-(1-pinch_factor)*radius;
         pinch_factor = .8;
         radius += radius *.25;//* (1-pinch_factor);
-        drawMorPinchedTube(xpos, ypos-6*height, zpos, radius, 3*height, radius, amount, -1*pinch_factor, 0, 0);
+        drawMorPinchedTube(xpos, ypos-6*height, zpos, radius, 2*height, radius, amount, -1*pinch_factor, 0, 0);
     glPopMatrix();
 
     /* Chain Mail */
@@ -296,12 +393,12 @@ void drawMorTorso()
         radius = radius-(1-pinch_factor)*radius;
         pinch_factor = .9;
         radius += radius *.3;//* (1-pinch_factor);
-        drawMorPinchedTube(xpos, ypos-9*height, zpos, radius, 2*height, radius, amount, -1*pinch_factor, 0, 7);
+        drawMorPinchedTube(xpos, ypos-9*height, zpos, radius, 2*height, radius, amount, -1*pinch_factor, 0, 5);
         glColor3f(0, 0, 0);
         drawMorCylinderCap(xpos, ypos-9.5*height, zpos, radius, -1.5*height, radius, 0, -1);
     glPopMatrix();
 
-    glColor3f(.2, .2, .2);
+    glColor3f(.2, .2, .2); // Reset color
 }
 
 /* Draw the Left Arm */
@@ -342,7 +439,6 @@ void drawMorLeftArm()
 }
 
 /* Draw the Right Arm */
-// TO-DO Animate this
 void drawMorRightArm()
 {
     double radius = .075;
@@ -487,7 +583,7 @@ void drawMorLeftHand()
 }
 
 /* Draw the Hand Holding the Sword */
-void drawMorRightHand()
+void drawMorRightHand(double t, double theta)
 {
     double radius = .075;
     double height = .1;
@@ -508,91 +604,119 @@ void drawMorRightHand()
     double ztilt;
     double tilt;
 
+    double rot = 0;
+
     int tex = 5;
 
     glColor3f(1, 1, 1);
 
-    /* Wrist */
-    glPushMatrix();
-    glScaled(.5, .5, .4);
-        morBall(xpos, ypos+height+.04, zpos, wrist_radius, 0, 0, tex);
-    glPopMatrix();
+    //Animation
+    if (theta >= -60) {
+        rot = t;
+        rot -= 120;
 
-    glColor3f(.2, .2, .2);
+        rot /= 5;
 
-    /* Palm */
-    glPushMatrix();
-    glScaled(.9, .5, .3);
-        drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 0);
-        //drawMorCylinderCap(xpos, ypos, zpos, radius, ypos-height, radius, 0, -1);
-    glPopMatrix();
-
-    /* Knuckles */
-    //Thumb
-    glPushMatrix();
-    glScaled(.3, .3, .25);
-        morBall(xpos+2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, 0);
-    glPopMatrix();
-
-    //Fingers
-    glPushMatrix();
-    glScaled(.285, .285, .285);
-        morBall(xpos-.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
-    glPopMatrix();
+        rot = rot > 12 ? 24 - rot : rot;
+    }
 
     glPushMatrix();
-    glScaled(.3, .3, .3);
-        morBall(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
-    glPopMatrix();
+    glRotated(-rot, 0, 0, 1);
 
-    glPushMatrix();
-    glScaled(.33, .3, .33);
-        morBall(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
-    glPopMatrix();
+        /* Wrist */
+        glPushMatrix();
+        glScaled(.5, .5, .4);
+            morBall(xpos, ypos+height+.04, zpos, wrist_radius, 0, 0, tex);
+        glPopMatrix();
 
-    glPushMatrix();
-    glScaled(.295, .295, .295);
-        morBall(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
-    glPopMatrix();
+        glColor3f(.2, .2, .2);
 
-    glColor3f(1, 1, 1);
+        /* Palm */
+        glPushMatrix();
+        glScaled(.9, .5, .3);
+            drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 0);
+            //drawMorCylinderCap(xpos, ypos, zpos, radius, ypos-height, radius, 0, -1);
+        glPopMatrix();
 
-    /* Fingers */
-    glPushMatrix();
-    glScaled(.3, .49, .3);
-        tilt = -2.5;
-        drawMorFinger(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius-.02, Finger_height, Finger_radius-.02, 0, 0, tilt, tex);
-    glPopMatrix();
+        /* Knuckles */
+        //Thumb
+        glPushMatrix();
+        glScaled(.3, .3, .25);
+            morBall(xpos+2*radius, ypos+height*.7, zpos, thumb_radius, 0, 0, 0);
+        glPopMatrix();
 
-    // Middle (should be slightly longer)
-    glPushMatrix();
-    glScaled(.3, .51, .3);
-        tilt = -2.5;
-        drawMorFinger(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius-.01, Finger_height, Finger_radius-.01, 0, 0, tilt, tex);
-    glPopMatrix();
+        //Fingers
+        glPushMatrix();
+        glScaled(.285, .285, .285);
+            morBall(xpos-.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
+        glPopMatrix();
 
-    glPushMatrix();
-    glScaled(.3, .49, .3);
-        tilt = -2.5;
-        drawMorFinger(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius-.01, Finger_height, Finger_radius-.01, 0, 0, tilt, tex);
-    glPopMatrix();
+        glPushMatrix();
+        glScaled(.3, .3, .3);
+            morBall(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
+        glPopMatrix();
 
-    // Pinky (should be slightly smaller)
-    glPushMatrix();
-    glScaled(.2, .45, .2);
-        tilt = -2.5;
-        drawMorFinger(xpos-.15*.3/.2, ypos-height-Finger_radius, zpos, Finger_radius-.02, Finger_height, Finger_radius-.02, 0, 0, tilt, tex);
-    glPopMatrix();
+        glPushMatrix();
+        glScaled(.33, .3, .33);
+            morBall(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
+        glPopMatrix();
 
-    /* Thumb */
-    glPushMatrix();
-    glScaled(.2, .2, .2);
-    glRotated(90, 0, 0, 1);
-    glRotated(180, 1, 0, 0);
-    xtilt = 1.3;
-    ztilt = 1.5;
-        drawMorRightThumb(xpos+.01, ypos+.35, zpos+.13, thumb_radius, thumb_height, thumb_radius, 0, xtilt, ztilt, tex);
-    glPopMatrix();
+        glPushMatrix();
+        glScaled(.295, .295, .295);
+            morBall(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
+        glPopMatrix();
+
+        glColor3f(1, 1, 1);
+
+        /* Fingers */
+        glPushMatrix();
+        glScaled(.3, .49, .3);
+            tilt = -2.5;
+            drawMorFinger(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius-.02, Finger_height, Finger_radius-.02, 0, 0, tilt, tex);
+        glPopMatrix();
+
+        // Middle (should be slightly longer)
+        glPushMatrix();
+        glScaled(.3, .51, .3);
+            tilt = -2.5;
+            drawMorFinger(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius-.01, Finger_height, Finger_radius-.01, 0, 0, tilt, tex);
+        glPopMatrix();
+
+        glPushMatrix();
+        glScaled(.3, .49, .3);
+            tilt = -2.5;
+            drawMorFinger(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius-.01, Finger_height, Finger_radius-.01, 0, 0, tilt, tex);
+        glPopMatrix();
+
+        // Pinky (should be slightly smaller)
+        glPushMatrix();
+        glScaled(.2, .45, .2);
+            tilt = -2.5;
+            drawMorFinger(xpos-.15*.3/.2, ypos-height-Finger_radius, zpos, Finger_radius-.02, Finger_height, Finger_radius-.02, 0, 0, tilt, tex);
+        glPopMatrix();
+
+        /* Thumb */
+        glPushMatrix();
+        glScaled(.2, .2, .2);
+        glRotated(90, 0, 0, 1);
+        glRotated(180, 1, 0, 0);
+        xtilt = 1.3;
+        ztilt = 1.5;
+            drawMorRightThumb(xpos+.01, ypos+.35, zpos+.13, thumb_radius, thumb_height, thumb_radius, 0, xtilt, ztilt, tex);
+        glPopMatrix();
+
+        glDisable(GL_CULL_FACE);
+
+        glPushMatrix();
+        glScaled(.2, .2, .2);
+        glRotated(90, 0, 0, 1);
+        glTranslated(xpos-.4, ypos, zpos-.3);
+            drawMorMace(t);
+        glPopMatrix();
+
+        glEnable(GL_CULL_FACE);
+
+    glPopMatrix(); // End Animation
 }
 
 /* Convinience Function to Draw a Finger */
@@ -702,7 +826,7 @@ void drawMorNeck()
 }
 
 /* Draw the Smaller Fighter's Helmet */
-void drawMorHelmet() 
+void drawMorHelmet(double t) 
 {
     double radius = .5;
     double height = .4;
@@ -726,6 +850,15 @@ void drawMorHelmet()
     int dir = 0;
 
     glColor3f(.2, .2, .2);
+
+    // Set up animation time
+    t /= 28;
+    t = (int) t % 14;
+    t = t > 7 ? 14 - t : t;
+
+    /* Head Animation*/
+    glPushMatrix();
+    glRotated(t, 1, 0, 0);
 
     /* Draw Main Helmet */
     glPushMatrix();
@@ -810,6 +943,8 @@ void drawMorHelmet()
     glColor3f(0, 0, 0);
     drawMorCylinderCap(xpos, ypos, zpos, radius, ypos+height-2*height/3, radius, 0, -1);
     drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 0);
+
+    glPopMatrix(); // End Head Animation
 }
 
 /* Draw a Cylinder Tube */
