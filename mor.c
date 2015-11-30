@@ -5,9 +5,9 @@
 #include "mor.h"
  
 /* Global Variables */
-extern int emission;
-extern float shinyvec[1];
-extern unsigned int textures[10];
+// extern int emission;
+// extern float shinyvec[1];
+// extern unsigned int textures[10];
 
 /* Draw the Figure */
 void drawMor(double x, double y, double z, double dx, double dy, double dz, double t) 
@@ -364,7 +364,7 @@ void drawMorTorso(double t)
 
     int axis = 1;
 
-    glColor3f(.2, .2, .2);
+    glColor3f(.35, .35, .35);
 
     /* Shoulder Portion */
     glPushMatrix();
@@ -392,13 +392,16 @@ void drawMorTorso(double t)
     glScaled(3, 1, 1.5);
         radius = radius-(1-pinch_factor)*radius;
         pinch_factor = .9;
-        radius += radius *.3;//* (1-pinch_factor);
-        drawMorPinchedTube(xpos, ypos-9*height, zpos, radius, 2*height, radius, amount, -1*pinch_factor, 0, 5);
+        radius += radius *.3;
+
+        glColor3f(.7, .7, .7); // Lighten things for the chainmail
+        drawMorPinchedTube(xpos, ypos-9*height, zpos, radius, 2*height, radius, amount, -1*pinch_factor, 0, 7);
+        
         glColor3f(0, 0, 0);
         drawMorCylinderCap(xpos, ypos-9.5*height, zpos, radius, -1.5*height, radius, 0, -1);
     glPopMatrix();
 
-    glColor3f(.2, .2, .2); // Reset color
+    glColor3f(.35, .35, .35); // Reset color
 }
 
 /* Draw the Left Arm */
@@ -421,10 +424,10 @@ void drawMorLeftArm()
  
     /*Forearm */
     //glColor3f(.37, .15, .12);
-    glColor3f(1, 1, 1);
+    glColor3f(.5, .5, .5);
     drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
     drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 5); // Makes Model Water Tight
-    glColor3f(.2, .2, .2);
+    glColor3f(.35, .35, .35);
     drawMorCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 0);
 
     /* Elbow */
@@ -457,11 +460,10 @@ void drawMorRightArm()
     double pinch_factor = .4;   
  
     /*Forearm */
-    //glColor3f(.37, .15, .12);
-    glColor3f(1, 1, 1);
+    glColor3f(.5, .5, .5);
     drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
     drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 5); // Makes Model Water Tight
-    glColor3f(.2, .2, .2);
+    glColor3f(.35, .35, .35);
     drawMorCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 0);
 
     /* Elbow */
@@ -499,7 +501,7 @@ void drawMorLeftHand()
 
     int tex = 5;
 
-    glColor3f(1, 1, 1);
+    glColor3f(.5, .5, .5);
 
     /* Wrist */
     glPushMatrix();
@@ -507,7 +509,7 @@ void drawMorLeftHand()
         morBall(xpos, ypos+height+.04, zpos, wrist_radius, 0, 0, tex);
     glPopMatrix();
 
-    glColor3f(.2, .2, .2);
+    glColor3f(.35, .35, .35);
 
     /* Palm */
     glPushMatrix();
@@ -544,7 +546,7 @@ void drawMorLeftHand()
         morBall(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
     glPopMatrix();
 
-    glColor3f(1, 1, 1);
+    glColor3f(.5, .5, .5);
     /* Fingers */
     glPushMatrix();
     glScaled(.3, .49, .3);
@@ -608,7 +610,7 @@ void drawMorRightHand(double t, double theta)
 
     int tex = 5;
 
-    glColor3f(1, 1, 1);
+    glColor3f(.5, .5, .5);
 
     //Animation
     if (theta >= -60) {
@@ -629,7 +631,7 @@ void drawMorRightHand(double t, double theta)
             morBall(xpos, ypos+height+.04, zpos, wrist_radius, 0, 0, tex);
         glPopMatrix();
 
-        glColor3f(.2, .2, .2);
+        glColor3f(.35, .35, .35);
 
         /* Palm */
         glPushMatrix();
@@ -666,7 +668,7 @@ void drawMorRightHand(double t, double theta)
             morBall(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius, 0, 0, 0);
         glPopMatrix();
 
-        glColor3f(1, 1, 1);
+        glColor3f(.5, .5, .5);
 
         /* Fingers */
         glPushMatrix();
@@ -820,9 +822,10 @@ void drawMorNeck()
     double amount = 360;
     double pinch_factor = .9;
 
-    glColor3f(0, 0, 0);
-    drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, -1);
-    glColor3f(.2, .2, .2);
+    glColor3f(0.5, 0.5, 0.5);
+    drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 7);
+
+    glColor3f(.35, .35, .35); // Reset color back to standard
 }
 
 /* Draw the Smaller Fighter's Helmet */
@@ -849,7 +852,7 @@ void drawMorHelmet(double t)
 
     int dir = 0;
 
-    glColor3f(.2, .2, .2);
+    glColor3f(.35, .35, .35);
 
     // Set up animation time
     t /= 28;

@@ -42,8 +42,8 @@ extern vect camera;
 
 extern int fp; // First person mode toggle
 
-extern float shinyvec[1];
 extern unsigned int textures[10];
+extern unsigned int ground[1];
 
 extern int emission;
 extern float Lpos[4];

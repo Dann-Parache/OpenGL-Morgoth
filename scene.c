@@ -36,7 +36,7 @@ void drawScene(int light, double t) {
         return; // Floor has no shadow, exit early
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,textures[0]);
+    glBindTexture(GL_TEXTURE_2D, ground[0]);
 
     glColor3f(.38, .20, .07); // Medium Brown
 
@@ -72,9 +72,9 @@ void drawSquare() {
 void Lights(int light, double t)
 {
     // Set light position
-    Lpos[0] = 2*Cos(t);
+    Lpos[0] = 4*Cos(t);
     Lpos[1] = ylight;
-    Lpos[2] = 2*Sin(t);
+    Lpos[2] = 4*Sin(t);
     Lpos[3] = 1;
 
     // Enable Lighting

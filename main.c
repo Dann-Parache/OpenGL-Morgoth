@@ -31,11 +31,12 @@ vect eye = {0, 0, 5}; // Represents where the eye is located
 
 /* Modes */
 int fp = 0; // Toggle between first person and global view
+int mode = 1; // Toggle orthogonal and projection
 int move = 1; // Move the light
 
 /* Light Values */
 float Lpos[4]; // Light position
-float ylight = 10; // Light y height
+float ylight = 2; // Light y height
 int distance = 7; // Light distance
 int local = 0; // Local Viewer Model
 int emission = 0; // Emission intensity (%)
@@ -47,7 +48,9 @@ float shinyvec[1]; // Shininess (value)
 int zh = 90; // Light azimuth
 
 /* Textures */
-unsigned int textures[10]; // Texture names
+unsigned int textures[10]; // Textures for Fighters
+unsigned int skybox[2]; // Skybox textures
+unsigned int ground[1]; // Ground Texture
 
 /* Shaders */
 int shader;
@@ -123,7 +126,7 @@ void sky(double size)
     // glEnd();
 
     //  Sides
-    glBindTexture(GL_TEXTURE_2D, textures[8]);
+    glBindTexture(GL_TEXTURE_2D, skybox[0]);
     glBegin(GL_QUADS);
         glTexCoord2f(0.00,0); glVertex3f(-size,-size,-size);
         glTexCoord2f(0.25,0); glVertex3f(+size,-size,-size);
@@ -147,7 +150,7 @@ void sky(double size)
     glEnd();
 
      //Top and bottom
-    glBindTexture(GL_TEXTURE_2D, textures[9]);
+    glBindTexture(GL_TEXTURE_2D, skybox[1]);
     glBegin(GL_QUADS);
         glTexCoord2f(0.0,0); glVertex3f(+size,+size,-size);
         glTexCoord2f(0.5,0); glVertex3f(+size,+size,+size);
@@ -175,7 +178,11 @@ void project()
     }
     else 
     {
-        gluPerspective(fov,asp,dim/16,16*dim);
+      if (mode)
+         gluPerspective(fov,asp,dim/16,16*dim);
+      //  Orthogonal projection
+      else
+         glOrtho(-asp*dim,+asp*dim, -dim,+dim, -dim,+dim);
     } 
     glMatrixMode(GL_MODELVIEW); // Switch to manipulating the model matrix
     glLoadIdentity(); // Undo previous transformations
@@ -204,11 +211,18 @@ void display()
     }
     else {
         // Perspective mode sets eye position
-
-        double px = -2 * dim * Sin(th) * Cos(ph);
-        double py = +2 * dim * Sin(ph);
-        double pz = +2 * dim * Cos(th) * Cos(ph);
-        gluLookAt(px,py,pz , 0,0,0 , 0,Cos(ph),0);
+        if (mode) {
+          double px = -2 * dim * Sin(th) * Cos(ph);
+          double py = +2 * dim * Sin(ph);
+          double pz = +2 * dim * Cos(th) * Cos(ph);
+          gluLookAt(px,py,pz , 0,0,0 , 0,Cos(ph),0);
+        }
+        // Orthogonal - set world orientation
+        else
+        {
+           glRotatef(ph,1,0,0);
+           glRotatef(th,0,1,0);
+        }
 
     }
     
@@ -229,7 +243,7 @@ void display()
 
     glPushMatrix();
     glTranslated(Lpos[0],Lpos[1],Lpos[2]);
-      glutSolidSphere(0.03,10,10);
+      glutSolidSphere(0.1,10,10);
     glPopMatrix();
 
     //  Enable shader program
@@ -343,6 +357,9 @@ void key(unsigned char ch, int x, int y)
         {
             fov++;
         }
+        //  Switch display mode
+        else if (ch == 'm' || ch == 'M')
+           mode = 1-mode;
    }
 
    project();
@@ -541,7 +558,7 @@ void idle()
     //zh = fmod(90*t,360.0);
     zh = fmod(90*t,360.0);
     // Update shadow map
-    ShadowMap();
+    //ShadowMap();
     glutPostRedisplay(); // Tell glut to redisplay the scene
 }
 
@@ -641,18 +658,21 @@ int main(int argc, char* argv[])
     glutIdleFunc(idle);
 
     /* Load Textures */
-    //textures[0] = LoadTexBMP("gray_armor.bmp");
-    textures[0] = LoadTexBMP("steel-jpg.bmp"); // Primary Mor Armor Texture
-    textures[1] = LoadTexBMP("gem.bmp");
-    textures[2] = LoadTexBMP("mor-eye.bmp"); // Eye Texture
+    textures[0] = LoadTexBMP("steel.bmp"); // Primary Mor Armor Texture
+    textures[1] = LoadTexBMP("gem.bmp"); // Texture for Helmet Gems
+    textures[2] = LoadTexBMP("eye.bmp"); // Eye Texture
     textures[3] = LoadTexBMP("gold.bmp"); // Primary Fin Armor Texture 
-    textures[4] = LoadTexBMP("white_fabric.bmp");
-    textures[5] = LoadTexBMP("leather.bmp"); // Fin Gauntlet Texture
-    textures[6] = LoadTexBMP("gray_armor.bmp"); // Secondary Mor Armor Texture
+    textures[4] = LoadTexBMP("greenCloth.bmp");
+    textures[5] = LoadTexBMP("leather.bmp"); // Mor Gauntlet and Boot Texture
+    textures[6] = LoadTexBMP("steelHelmet.bmp"); // Secondary Mor Armor Texture
     textures[7] = LoadTexBMP("chainmail.bmp"); // For Chainmail
+    textures[8] = LoadTexBMP("goldHelmet.bmp"); // Secondary Fin Armor Texture
+    textures[9] = LoadTexBMP("leather.bmp"); // Fin Gauntlet and Boot Texture
 
-    textures[8] = LoadTexBMP("sky0.bmp");
-    textures[9] = LoadTexBMP("sky1.bmp");
+    skybox[0] = LoadTexBMP("sky0.bmp");
+    skybox[1] = LoadTexBMP("sky1.bmp");
+
+    ground[0] = LoadTexBMP("ground.bmp");
 
     glEnable(GL_DEPTH_TEST); // Enable Z-buffering
 
