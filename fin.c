@@ -429,11 +429,11 @@ void drawFinSkirt(double x, double y, double z, double dx, double dy, double dz,
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -992,11 +992,11 @@ void drawFinCylinderTube(double x, double y, double z, double dx, double dy, dou
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1038,11 +1038,11 @@ void drawFinCappedCylinder(double x, double y, double z, double dx, double dy, d
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1092,11 +1092,11 @@ void drawFinCylinderCap(double x, double y, double z, double dx, double dy, doub
     }
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1141,11 +1141,11 @@ void drawFinPinchedTube(double x, double y, double z, double dx, double dy, doub
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1194,11 +1194,11 @@ void drawFinPointedCylinder(double x, double y, double z, double dx, double dy, 
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1246,11 +1246,11 @@ void drawFinCone(double x, double y, double z, double dx, double dy, double dz, 
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1290,11 +1290,11 @@ void drawFinHelmetGrate(double x, double y, double z, double dx, double dy, doub
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1465,11 +1465,11 @@ void drawFinBlade(double x, double y, double z, int tex)
     int width = 1;
 
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
@@ -1603,15 +1603,14 @@ void drawFinBlade(double x, double y, double z, int tex)
 void drawFinBladeTip(double x, double y, double z, int tex)
 {
     int i; 
-    int length = 5; // Length of the tip
-    int width = 1;
+    int length = 5;
 
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);

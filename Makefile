@@ -6,9 +6,29 @@ EXE=taan7753fp
 # Main target
 all: $(EXE)
 
+# What you should turn in Andrews
+#CFLG=-O3 -Wall
+#LIBS=-lglut -lGLU -lGL -lm -lgomp
+#CLEAN=rm -f $(EXE) main *.o *.a
+
+#  MinGW
+ifeq "$(OS)" "Windows_NT"
+CFLG=-O3 -Wall
+LIBS=-lglut32cu -lglu32 -lopengl32
+CLEAN=del *.exe *.o *.a
+else
+#  OSX
+ifeq "$(shell uname)" "Darwin"
+CFLG=-O3 -Wall -Wno-deprecated-declarations
+LIBS=-framework GLUT -framework OpenGL
+#  Linux/Unix/Solaris
+else
 CFLG=-O3 -Wall
 LIBS=-lglut -lGLU -lGL -lm
-CLEAN=rm -f $(EXE) main *.o *.a
+endif
+#  OSX/Linux/Unix/Solaris
+CLEAN=rm -f $(EXE) *.o *.a
+endif
 
 # Dependencies
 ex13.o: ex13.c CSCIx229.h

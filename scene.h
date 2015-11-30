@@ -18,6 +18,8 @@
 #endif
 
 #include "CSCIx229.h"
+#include "mor.h"
+#include "fin.h"
 
 #define PI 3.141592
 
@@ -44,9 +46,13 @@ extern float shinyvec[1];
 extern unsigned int textures[10];
 
 extern int emission;
+extern float Lpos[4];
+extern float ylight;
 
 /* Draw the Scene */
-void drawScene();
+void drawScene(int light, double t);
+void drawSquare();
+void Lights(int light, double t); // Draw Light
 
 /* Glut Functions */
 void project();

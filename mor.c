@@ -957,11 +957,11 @@ void drawMorCylinderTube(double x, double y, double z, double dx, double dy, dou
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1003,11 +1003,11 @@ void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, d
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1057,11 +1057,11 @@ void drawMorCylinderCap(double x, double y, double z, double dx, double dy, doub
     }
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1109,11 +1109,11 @@ void drawMorPinchedTube(double x, double y, double z, double dx, double dy, doub
     }
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1170,11 +1170,11 @@ void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, 
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1222,11 +1222,11 @@ void drawMorCone(double x, double y, double z, double dx, double dy, double dz, 
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1266,11 +1266,11 @@ void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, doub
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     
     /* Begin Lighting */
-    float white[] = {1,1,1,1};
-    float black[] = {0,0,0,1};
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+    // float white[] = {1,1,1,1};
+    // float black[] = {0,0,0,1};
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
