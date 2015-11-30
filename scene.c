@@ -1,12 +1,11 @@
 /*
- *  Taylor Andrews
+ * Taylor Andrews
+ * Draw the Scene.
  */
 
 #include "scene.h"
  
 /* Global Variables */
-//extern int emission;
-//extern float shinyvec[1];
 extern unsigned int textures[10]; // In case we need textures
 
 /* Draw the Scene */

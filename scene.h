@@ -1,5 +1,6 @@
 /*
- *  Taylor Andrews
+ * Taylor Andrews
+ * Header file for the scene.
  */
 
 #ifndef SCENE_H
@@ -31,21 +32,9 @@ typedef struct {
 } vect;
 
 /* Global Variables */
-extern int th; // Azimuth of view angle
-extern int ph; // Elevation of view angle
-extern int fov; // Field of view
-extern int mode; // Orthogonal view or projetion view
-extern double asp; // Window aspect ratio
-extern double dim; // Dimension of orthogonal box
-
-extern vect camera;
-
-extern int fp; // First person mode toggle
-
 extern unsigned int textures[10];
 extern unsigned int ground[1];
 
-extern int emission;
 extern float Lpos[4];
 extern float ylight;
 
