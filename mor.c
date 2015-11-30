@@ -1,13 +1,11 @@
 /*
- *  Taylor Andrews
+ * Taylor Andrews
+ *
+ * This file contains function implementation for the larger fighter of 
+ * the two. He is holding a mace.
  */
 
 #include "mor.h"
- 
-/* Global Variables */
-// extern int emission;
-// extern float shinyvec[1];
-// extern unsigned int textures[10];
 
 /* Draw the Figure */
 void drawMor(double x, double y, double z, double dx, double dy, double dz, double t) 
@@ -140,9 +138,6 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz, doub
         /* Body */
         glPushMatrix();
         glTranslated(torso_posX, torso_posY, torso_posZ);
-        //glScaled(righthand_scaleX, righthand_scaleY, righthand_scaleZ);
-        //glRotated(180, 0, 0, 1);
-        //glRotated(90, 0, 1, 0);
             drawMorTorso(torsotheta);
         glPopMatrix();
 
@@ -169,7 +164,7 @@ void drawMor(double x, double y, double z, double dx, double dy, double dz, doub
     glPopMatrix(); // End body animation block
 }
 
-/* Draw the Mace */
+/* Draw the Mace with the time as a parameter for animation purposes */
 void drawMorMace(double t) 
 {
     double radius = .2;
@@ -190,7 +185,7 @@ void drawMorMace(double t)
     glPopMatrix();
 }
 
-/* Draw the Left Leg */
+/* Draw the Left Leg with the time as a parameter for animation purposes */
 void drawMorLeftLeg(double t)
 {
     double radius = .48;
@@ -204,14 +199,7 @@ void drawMorLeftLeg(double t)
 
     double knee_radius = .5;
 
-    // Animation
-    // t /= 10;
-    // t = t > 18 ? 36 - t : t;
-
     glPushMatrix();
-    // glTranslated(3.3*height, -1.75*height, 0);
-    // glRotated(t, 1, 0, 0);
-    // glTranslated(-3.3*height, 1.75*height, 0);
 
     /* Thigh */
     glPushMatrix();
@@ -257,11 +245,12 @@ void drawMorLeftLeg(double t)
     glRotated(90, 1, 0, 0);
         radius = .25;
         pinch_factor = .8;
-        //drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
+
         glPushMatrix();
         glRotated(180, 0, 0, 1);
             drawMorPinchedTube(xpos, ypos-.35, zpos+4.9*height, radius, .5*height, radius, amount, pinch_factor, 0, 5);
         glPopMatrix();
+
         drawMorPinchedTube(xpos, ypos+.9, zpos+4.9*height, radius, .12*height, radius, amount, pinch_factor, 0, 5);
         morBall(xpos, ypos+.6+.5*height, zpos+4.9*height, radius, -90, 1, 5);
     glPopMatrix();
@@ -269,7 +258,7 @@ void drawMorLeftLeg(double t)
     glPopMatrix(); // End animation
 }
 
-/* Draw the Right Leg */
+/* Draw the Right Leg with the time as a parameter for animation purposes */
 void drawMorRightLeg(double t)
 {
     double radius = .48;
@@ -338,11 +327,12 @@ void drawMorRightLeg(double t)
     glRotated(90, 1, 0, 0);
         radius = .25;
         pinch_factor = .8;
-        //drawFinCylinderTube(xpos, ypos+.5, zpos+4.9*height, radius, .5*height, radius, amount, 0, 0, 0, 5);
+
         glPushMatrix();
         glRotated(180, 0, 0, 1);
             drawMorPinchedTube(xpos, ypos-.35, zpos+4.9*height, radius, .5*height, radius, amount, pinch_factor, 0, 5);
         glPopMatrix();
+
         drawMorPinchedTube(xpos, ypos+.9, zpos+4.9*height, radius, .12*height, radius, amount, pinch_factor, 0, 5);
         morBall(xpos, ypos+.6+.5*height, zpos+4.9*height, radius, -90, 1, 5);
     glPopMatrix();
@@ -350,7 +340,7 @@ void drawMorRightLeg(double t)
     glPopMatrix(); // End Animation
 }
 
-/* Draw the Torso */
+/* Draw the Torso with the time as a parameter for animation purposes */
 void drawMorTorso(double t) 
 {
     double radius = .52;
@@ -383,7 +373,7 @@ void drawMorTorso(double t)
     glScaled(3, 1, 1.5);
         radius = radius-(1-pinch_factor)*radius;
         pinch_factor = .8;
-        radius += radius *.25;//* (1-pinch_factor);
+        radius += radius *.25;
         drawMorPinchedTube(xpos, ypos-6*height, zpos, radius, 2*height, radius, amount, -1*pinch_factor, 0, 0);
     glPopMatrix();
 
@@ -423,10 +413,10 @@ void drawMorLeftArm()
     double pinch_factor = .4;   
  
     /*Forearm */
-    //glColor3f(.37, .15, .12);
     glColor3f(.5, .5, .5);
     drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
     drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 5); // Makes Model Water Tight
+
     glColor3f(.35, .35, .35);
     drawMorCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 0);
 
@@ -463,6 +453,7 @@ void drawMorRightArm()
     glColor3f(.5, .5, .5);
     drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 5);
     drawMorCylinderCap(xpos, ypos, zpos, radius, -height, radius, 0, 5); // Makes Model Water Tight
+
     glColor3f(.35, .35, .35);
     drawMorCylinderTube(xpos, ypos-2*height, zpos, radius*pinch_factor*1.65, height, radius*pinch_factor*1.65, amount, 0, 0, 0, 0);
 
@@ -515,7 +506,6 @@ void drawMorLeftHand()
     glPushMatrix();
     glScaled(.9, .5, .3);
         drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 0);
-        //drawMorCylinderCap(xpos, ypos, zpos, radius, ypos-height, radius, 0, -1);
     glPopMatrix();
 
     /* Knuckles */
@@ -548,6 +538,7 @@ void drawMorLeftHand()
 
     glColor3f(.5, .5, .5);
     /* Fingers */
+    // First
     glPushMatrix();
     glScaled(.3, .49, .3);
         tilt = -2.5;
@@ -561,6 +552,7 @@ void drawMorLeftHand()
         drawMorFinger(xpos-.05, ypos-height-Finger_radius, zpos, Finger_radius-.01, Finger_height, Finger_radius-.01, 0, 0, tilt, tex);
     glPopMatrix();
 
+    // Ring
     glPushMatrix();
     glScaled(.3, .49, .3);
         tilt = -2.5;
@@ -584,7 +576,7 @@ void drawMorLeftHand()
     glPopMatrix();
 }
 
-/* Draw the Hand Holding the Sword */
+/* Draw the Hand Holding the Sword with the time and angle as a parameter for animation purposes */
 void drawMorRightHand(double t, double theta)
 {
     double radius = .075;
@@ -637,7 +629,6 @@ void drawMorRightHand(double t, double theta)
         glPushMatrix();
         glScaled(.9, .5, .3);
             drawMorPinchedTube(xpos, ypos, zpos, radius, height, radius, amount, pinch_factor, 0, 0);
-            //drawMorCylinderCap(xpos, ypos, zpos, radius, ypos-height, radius, 0, -1);
         glPopMatrix();
 
         /* Knuckles */
@@ -672,6 +663,7 @@ void drawMorRightHand(double t, double theta)
 
         /* Fingers */
         glPushMatrix();
+        // First
         glScaled(.3, .49, .3);
             tilt = -2.5;
             drawMorFinger(xpos+.15, ypos-height-Finger_radius, zpos, Finger_radius-.02, Finger_height, Finger_radius-.02, 0, 0, tilt, tex);
@@ -684,6 +676,7 @@ void drawMorRightHand(double t, double theta)
             drawMorFinger(xpos+.05, ypos-height-Finger_radius, zpos, Finger_radius-.01, Finger_height, Finger_radius-.01, 0, 0, tilt, tex);
         glPopMatrix();
 
+        // Ring
         glPushMatrix();
         glScaled(.3, .49, .3);
             tilt = -2.5;
@@ -721,7 +714,12 @@ void drawMorRightHand(double t, double theta)
     glPopMatrix(); // End Animation
 }
 
-/* Convinience Function to Draw a Finger */
+/* 
+ * Convinience function to draw a finger at position
+ * (x, y, z), scaled by dx, dy, and dz, rotated by th,
+ * titled in the x direction by xtilt, titled in the 
+ * z direction by ztilt, and with the texture specified by tex.
+ */
 void drawMorFinger(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex) 
 {
     double radius = dx;
@@ -732,26 +730,28 @@ void drawMorFinger(double x, double y, double z, double dx, double dy, double dz
 
     /* First Section */
     glPushMatrix();
-    //glScaled(dx, dy, dz);
         drawMorCylinderTube(x, y, z, radius, height, radius, amount, 0, xtilt, ztilt, tex);
     glPopMatrix();
 
     /* Middle Joint */
     glPushMatrix();
-    //glScaled(dx, dy, dz);
         morBall(x+xtilt/10, y-height, z+ztilt/10+radius, radius+.01, 0, 0, tex);
     glPopMatrix();
 
     /* Second Secontion */
     glPushMatrix();
-    //glScaled(dx, dy, dz);
         end = 0;
         drawMorCappedCylinder(x+xtilt/10, y-height, z+ztilt/10-1.42*radius, radius, height/2+.01, radius, amount, 0, 0, -1*ztilt, tex, end);
     glPopMatrix();
 
 }
 
-/* Left Thumb for the Relaxed Hand */
+/* 
+ * Draw the left thumb at position (x, y, z), 
+ * scaled by dx, dy, and dz, rotated by th,
+ * titled in the x direction by xtilt, titled in the 
+ * z direction by ztilt, and with the texture specified by tex.
+ */
 void drawMorLeftThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex) 
 {
     double radius = dx;
@@ -781,7 +781,12 @@ void drawMorLeftThumb(double x, double y, double z, double dx, double dy, double
 
 }
 
-/* Thumb for the Hand with the Sword */
+/* 
+ * Draw the right thumb at position (x, y, z), 
+ * scaled by dx, dy, and dz, rotated by th,
+ * titled in the x direction by xtilt, titled in the 
+ * z direction by ztilt, and with the texture specified by tex.
+ */
 void drawMorRightThumb(double x, double y, double z, double dx, double dy, double dz, double th, double xtilt, double ztilt, int tex)
 {
     double radius = dx;
@@ -792,19 +797,16 @@ void drawMorRightThumb(double x, double y, double z, double dx, double dy, doubl
 
     /* First Section */
     glPushMatrix();
-    //glScaled(dx, dy, dz);
         drawMorCylinderTube(x, y, z, radius, height, radius, amount, 0, xtilt, -1*ztilt, tex);
     glPopMatrix();  
 
     /* Middle Joint */
     glPushMatrix();
-    //glScaled(dx, dy, dz);
         morBall(x, y+radius, z, radius+.01, 0, 0, tex);
     glPopMatrix();
 
     /* Second Secontion */
     glPushMatrix();
-    //glScaled(dx, dy, dz);
         end = 1;
         drawMorCappedCylinder(x+.01, y+radius*.9-.04, z+.016, radius, height/2, radius, amount, 0, -1.8, 1.8, tex, end);
     glPopMatrix();
@@ -828,7 +830,7 @@ void drawMorNeck()
     glColor3f(.35, .35, .35); // Reset color back to standard
 }
 
-/* Draw the Smaller Fighter's Helmet */
+/* Draw the Smaller Fighter's Helmet with the time as a parameter for animation purposes */
 void drawMorHelmet(double t) 
 {
     double radius = .5;
@@ -950,7 +952,13 @@ void drawMorHelmet(double t)
     glPopMatrix(); // End Head Animation
 }
 
-/* Draw a Cylinder Tube */
+/*  
+ * Draw a cylinder tube at position (x, y, z), 
+ * scaled by dx, dy, and dz, amount degrees out of 360,
+ * rotated by th, titled in the x direction by xtilt,
+ * titled in the z direction by ztilt, 
+ * and with the texture specified by tex.
+ */
 void drawMorCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex) 
 {
     int j;
@@ -958,13 +966,6 @@ void drawMorCylinderTube(double x, double y, double z, double dx, double dy, dou
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-    
-    /* Begin Lighting */
-    // float white[] = {1,1,1,1};
-    // float black[] = {0,0,0,1};
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -996,7 +997,14 @@ void drawMorCylinderTube(double x, double y, double z, double dx, double dy, dou
     glDisable(GL_TEXTURE_2D); 
 }
 
-/* Draw a Cylinder with a Rounded Cap */
+/*  
+ * Draw a cylinder with a spherical cap at position (x, y, z), 
+ * scaled by dx, dy, and dz, amount degrees out of 360,
+ * rotated by th, titled in the x direction by xtilt,
+ * titled in the z direction by ztilt, 
+ * with the texture specified by tex, and at the end specified
+ * by end.
+ */
 void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex, int end) 
 {
     int j;
@@ -1004,13 +1012,6 @@ void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, d
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-    
-    /* Begin Lighting */
-    // float white[] = {1,1,1,1};
-    // float black[] = {0,0,0,1};
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1048,7 +1049,7 @@ void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, d
     glDisable(GL_TEXTURE_2D); 
 }
 
-/* Draw a cylinder cap at (x,y,z) scaled by dx,dy,dz and rotated by th */
+/* Draw a cylinder cap at (x,y,z) scaled by dx,dy,dz and rotated by th with texture tex */
 void drawMorCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th, int tex) 
 {
     int i;
@@ -1058,13 +1059,6 @@ void drawMorCylinderCap(double x, double y, double z, double dx, double dy, doub
         glEnable(GL_TEXTURE_2D);
         glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     }
-    
-    /* Begin Lighting */
-    // float white[] = {1,1,1,1};
-    // float black[] = {0,0,0,1};
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1099,7 +1093,12 @@ void drawMorCylinderCap(double x, double y, double z, double dx, double dy, doub
         glDisable(GL_TEXTURE_2D); 
 }
 
-/* Pinched Tube for the hands */ 
+/*  
+ * Draw a pinched cylinder tube at position (x, y, z), 
+ * scaled by dx, dy, and dz, amount degrees out of 360,
+ * narrowed by a factor of pinch_factor, 
+ * rotated by th, and with the texture specified by tex.
+ */ 
 void drawMorPinchedTube(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex)
 {
     int j;
@@ -1110,13 +1109,6 @@ void drawMorPinchedTube(double x, double y, double z, double dx, double dy, doub
         glEnable(GL_TEXTURE_2D);
         glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
     }
-    
-    /* Begin Lighting */
-    // float white[] = {1,1,1,1};
-    // float black[] = {0,0,0,1};
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1144,16 +1136,10 @@ void drawMorPinchedTube(double x, double y, double z, double dx, double dy, doub
         double z = Sin(j);
 
         glNormal3d(Cos(j), 0.0, Sin(j));
-
         glTexCoord2f(flipped*-tc, 0.0); glVertex3d(x, -y, z);
-        //if (j < amount/2) {
-            glNormal3d(Cos(j), 0.0, Sin(j));
-            glTexCoord2f(flipped*-tc, 1.0); glVertex3d(x*pinch_factor, y, z*pinch_factor);
-        // }
-        // else {
-        //     glNormal3d(Cos(j)-.1, 0.0, Sin(j)-.1);
-        //     glTexCoord2f(-tc, 1.0); glVertex3d(x-.1, y, z-.1);
-        // }
+
+        glNormal3d(Cos(j), 0.0, Sin(j));
+        glTexCoord2f(flipped*-tc, 1.0); glVertex3d(x*pinch_factor, y, z*pinch_factor);
     }
     glEnd();
 
@@ -1163,7 +1149,12 @@ void drawMorPinchedTube(double x, double y, double z, double dx, double dy, doub
         glDisable(GL_TEXTURE_2D); 
 }
 
-/* A Cylinder with a Pointy Tip for the Helmet */
+/*  
+ * Draw a cylinder with a pointed tip at position (x, y, z), 
+ * scaled by dx, dy, and dz, amount degrees out of 360,
+ * rotated by th, with the texture specified by tex, and
+ * facing in the direction specified by dir.
+ */
 void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, double amount, int tex, int dir)
 {
     int j;
@@ -1171,13 +1162,6 @@ void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-    
-    /* Begin Lighting */
-    // float white[] = {1,1,1,1};
-    // float black[] = {0,0,0,1};
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1215,7 +1199,7 @@ void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, 
 
 }
 
-/* Draw a cone at (x,y,z) scaled by dx,dy,dz and rotated by th */
+/* Draw a cone at (x,y,z) scaled by dx,dy,dz, rotated by th and with the texture tex */
 void drawMorCone(double x, double y, double z, double dx, double dy, double dz, double th, int tex) 
 {
     int i; 
@@ -1223,13 +1207,6 @@ void drawMorCone(double x, double y, double z, double dx, double dy, double dz, 
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-
-    /* Begin Lighting */
-    // float white[] = {1,1,1,1};
-    // float black[] = {0,0,0,1};
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1258,7 +1235,11 @@ void drawMorCone(double x, double y, double z, double dx, double dy, double dz, 
     glDisable(GL_TEXTURE_2D); 
 }
 
-/* Draw the Helmet Grate */
+/*  
+ * Draw the helmet grate at position (x, y, z), 
+ * scaled by dx, dy, and dz, amount degrees out of 360,
+ * rotated by th, and with the texture specified by tex.
+ */
 void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, double dz, double amount, double th, int tex) 
 {    
 	int j;
@@ -1267,13 +1248,6 @@ void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, doub
     /* Enable textures */
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-    
-    /* Begin Lighting */
-    // float white[] = {1,1,1,1};
-    // float black[] = {0,0,0,1};
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-    // glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
     glPushMatrix();
 
@@ -1316,8 +1290,9 @@ void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, doub
 }
 
 /*
- *  Draw vertex in polar coordinates with normal
- *  Adapted from ex13
+ * Draw vertex in polar coordinates with normal at 
+ * angle th, ph, with texture tex.
+ * Adapted from ex13
  */
 void MorVertex(double th, double ph, int tex)
 {
@@ -1334,14 +1309,13 @@ void MorVertex(double th, double ph, int tex)
 }
 
 /*
- *  Draw a ball at (x,y,z) with radius (r)
- *  Adapted from ex13
+ * Draw a hemisphere at (x,y,z) with radius r,
+ * titled by tilt, rotated about axis, and with texture tex.
+ * Adapted from ex13
  */
 void morHalfBall(double x, double y, double z, double r, double tilt, int axis, int tex)
 {
     int th,ph;
-    //float yellow[] = {1.0,1.0,0.0,1.0};
-    //float Emission[]  = {0.0,0.0,0.01*emission,1.0};
 
     if (tex != -1) {
         /* Enable textures */
@@ -1357,10 +1331,6 @@ void morHalfBall(double x, double y, double z, double r, double tilt, int axis, 
     else if (axis == 1)
         glRotated(tilt, 1, 0, 0);
 
-    //glMaterialfv(GL_FRONT,GL_SHININESS,shinyvec);
-    //glMaterialfv(GL_FRONT,GL_SPECULAR,yellow);
-    //glMaterialfv(GL_FRONT,GL_EMISSION,Emission);
-
     if (tex != -1) {
         glBindTexture(GL_TEXTURE_2D,textures[tex]);
     }
@@ -1374,8 +1344,6 @@ void morHalfBall(double x, double y, double z, double r, double tilt, int axis, 
         {
             MorVertex(th,ph, tex);
             MorVertex(th,ph+inc, tex);
-            //Vertex(th+inc,ph, tex, 2);
-            //Vertex(th+inc,ph+inc, tex, 3);
         }
         glEnd();
     }
@@ -1385,14 +1353,13 @@ void morHalfBall(double x, double y, double z, double r, double tilt, int axis, 
 }
 
 /*
- *  Draw a ball at (x,y,z) with radius (r)
- *  Adapted from ex13
+ * Draw a ball at (x,y,z) with radius r,
+ * titled by tilt, rotated about axis, and with texture tex.
+ * Adapted from ex13
  */
 void morBall(double x, double y, double z, double r, double tilt, int axis, int tex)
 {
     int th,ph;
-    //float yellow[] = {1.0,1.0,0.0,1.0};
-    //float Emission[]  = {0.0,0.0,0.01*emission,1.0};
 
     if (tex != -1) {
         /* Enable textures */
@@ -1409,10 +1376,6 @@ void morBall(double x, double y, double z, double r, double tilt, int axis, int 
         glRotated(tilt, 1, 0, 0);
     glRotated(-90, 1, 0, 0);
 
-    //glMaterialfv(GL_FRONT,GL_SHININESS,shinyvec);
-    //glMaterialfv(GL_FRONT,GL_SPECULAR,yellow);
-    //glMaterialfv(GL_FRONT,GL_EMISSION,Emission);
-
     if (tex != -1) {
         glBindTexture(GL_TEXTURE_2D,textures[tex]);
     }
@@ -1426,8 +1389,6 @@ void morBall(double x, double y, double z, double r, double tilt, int axis, int 
         {
             MorVertex(th,ph, tex);
             MorVertex(th,ph+inc, tex);
-            //Vertex(th+inc,ph, tex, 2);
-            //Vertex(th+inc,ph+inc, tex, 3);
         }
         glEnd();
     }

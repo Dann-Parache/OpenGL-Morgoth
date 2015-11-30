@@ -1,5 +1,6 @@
 /*
- *  Taylor Andrews
+ * Taylor Andrews
+ * Header file for larger figure.
  */
 
 #ifndef MOR_H
@@ -22,19 +23,7 @@
 #define PI 3.141592
 
 /* Global Variables */
-extern int th; // Azimuth of view angle
-extern int ph; // Elevation of view angle
-extern int fov; // Field of view
-extern int mode; // Orthogonal view or projetion view
-extern double asp; // Window aspect ratio
-extern double dim; // Dimension of orthogonal box
-
-extern int fp; // First person mode toggle
-
-extern float shinyvec[1];
-extern unsigned int textures[10];
-
-extern int emission;
+extern unsigned int textures[10]; // Textures for fighter
 
 /* Draw the Scene */
 void drawMor(double x, double y, double z, double dx, double dy, double dz, double t);
@@ -62,11 +51,15 @@ void drawMorLeftLeg(double t);
 void drawMorRightLeg(double t);
 
 /* Shapes and Objects */
-void drawMorCylinderTube(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex);
-void drawMorPinchedTube(double x, double y, double z, double dx, double dy, double dz, double amount, double pinch_factor, double th, int tex);
-void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, double dz, double amount, double th, double xtilt, double ztilt, int tex, int end); 
+void drawMorCylinderTube(double x, double y, double z, double dx, double dy, double dz, 
+	                     double amount, double th, double xtilt, double ztilt, int tex);
+void drawMorPinchedTube(double x, double y, double z, double dx, double dy, double dz, 
+	                    double amount, double pinch_factor, double th, int tex);
+void drawMorCappedCylinder(double x, double y, double z, double dx, double dy, double dz, double amount, 
+	                       double th, double xtilt, double ztilt, int tex, int end); 
 void drawMorCylinderCap(double x, double y, double z, double dx, double dy, double dz, double th, int tex);
-void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, double dz, double th, double amount, int tex, int dir);
+void drawMorPointedCylinder(double x, double y, double z, double dx, double dy, double dz, 
+	                        double th, double amount, int tex, int dir);
 void drawMorCone(double x, double y, double z, double dx, double dy, double dz, double th, int tex);
 void morVertex(double th, double ph, int tex);
 void morHalfBall(double x, double y, double z, double r, double tilt, int axis, int tex);
