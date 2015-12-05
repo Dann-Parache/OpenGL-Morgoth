@@ -386,7 +386,7 @@ void drawFinTorso()
         drawFinSkirt(xpos, ypos-6.5*height, zpos, hip_radius, 2*height, hip_radius, amount, pinch_factor, 0, 4);
 
         glColor3f(1, 1, 1);
-        drawFinCylinderCap(xpos, ypos-9.5*height, zpos, hip_radius-.06, -1.5*height, hip_radius-.06, 0, -1);
+        drawFinCylinderCap(xpos, ypos-9.5*height, zpos, hip_radius-.08, -1.5*height, hip_radius-.08, 0, -1);
     glPopMatrix();
 
     // Turn face culling back on
