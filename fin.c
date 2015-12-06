@@ -872,6 +872,7 @@ void drawFinHelmet(double t)
     t /= 28;
     t = (int) t % 14;
     t = t > 7 ? 14 - t : t;
+    t += 7;
 
     /* Head Animation*/
     glPushMatrix();
