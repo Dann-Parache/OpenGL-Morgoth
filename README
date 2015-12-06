@@ -1,13 +1,24 @@
 CSCI 4229 Computer Graphics
 Fall 2015
 
+Project Review
+
 Taylor Andrews
 
-you can take out csci x229 if you pull out loadtexbmp
+**Build**
+  make
+
+**Run**
+  ./taan7753FinalProject
 
 **Key Bindings**
+  f          Toggle first person
+  m          Toggle orthogonal and perspective (must be out of first person)
   w/s        Move in first person
   a/d        Rotate camera in first person
+  PgUp/PgDn  Zoom in and zoom out
+  1/2        Change FOV
   arrows     Change view angle
+  space      Pause light
   0          Reset view angle
   ESC        Exit
