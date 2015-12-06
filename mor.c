@@ -173,7 +173,12 @@ void drawMorMace(double t)
     double ypos = -2.5;
     double zpos = 0;
 
+    double spike_rad = .25;
+    double spike_height = .33;
+
     double amount = 360;
+
+    glColor3f(.2, .2, .2);
 
     drawMorCylinderTube(xpos, ypos, zpos, radius, height, radius, amount, 0, 0, 0, 0);
     drawMorCylinderCap(xpos, ypos+height, zpos, radius, ypos, radius, 0, 0);
@@ -182,6 +187,19 @@ void drawMorMace(double t)
     glScaled(1.5, 3, 1);
     radius = .5;
         morBall(xpos, (ypos-height)/3, zpos, radius, 0, 0, 0);
+
+        glPushMatrix();
+        glRotated(180, 0, 0, 1);
+            // Tip
+            drawMorCone(xpos, ypos+height+2*radius, zpos, spike_rad, spike_height, spike_rad, 0, 6);
+
+            // Sides
+            drawMorCone(xpos-.8*radius, ypos+height+1.35*radius, zpos, spike_rad, spike_height, spike_rad, 90, 6);
+            drawMorCone(xpos+.8*radius, ypos+height+1.25*radius, zpos, spike_rad, spike_height, spike_rad, -90, 6);
+
+            drawMorCone(xpos, ypos+height+1.35*radius, zpos+.8*radius, spike_rad, spike_height, spike_rad, 90.01, 6);
+            drawMorCone(xpos, ypos+height+1.25*radius, zpos-.8*radius, spike_rad, spike_height, spike_rad, -90.01, 6);
+        glPopMatrix();
     glPopMatrix();
 }
 
@@ -1211,8 +1229,11 @@ void drawMorCone(double x, double y, double z, double dx, double dy, double dz, 
     glPushMatrix();
 
     /* Transform Cone */
-    glTranslated(x,y,z);
-    glRotated(th,0,0,1);
+    glTranslated(x, y, z);
+    glRotated(th, 0, 0, 1);
+    if ((th == 90.01) || (th == -90.01))
+        glRotated(th, 1, 0, 0);
+
     glScaled(dx,dy,dz);
 
     glBindTexture(GL_TEXTURE_2D,textures[tex]);
@@ -1294,7 +1315,7 @@ void drawMorHelmetGrate(double x, double y, double z, double dx, double dy, doub
  * angle th, ph, with texture tex.
  * Adapted from ex13
  */
-void MorVertex(double th, double ph, int tex)
+void morVertex(double th, double ph, int tex)
 {
     double x = Sin(th)*Cos(ph);
     double y = Cos(th)*Cos(ph);
@@ -1342,8 +1363,8 @@ void morHalfBall(double x, double y, double z, double r, double tilt, int axis, 
         glBegin(GL_QUAD_STRIP);
         for (th=0;th<=360;th+=2*inc)
         {
-            MorVertex(th,ph, tex);
-            MorVertex(th,ph+inc, tex);
+            morVertex(th,ph, tex);
+            morVertex(th,ph+inc, tex);
         }
         glEnd();
     }
@@ -1387,8 +1408,8 @@ void morBall(double x, double y, double z, double r, double tilt, int axis, int 
         glBegin(GL_QUAD_STRIP);
         for (th=0;th<=360;th+=2*inc)
         {
-            MorVertex(th,ph, tex);
-            MorVertex(th,ph+inc, tex);
+            morVertex(th,ph, tex);
+            morVertex(th,ph+inc, tex);
         }
         glEnd();
     }
