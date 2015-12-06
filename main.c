@@ -1,24 +1,31 @@
 /*
- *  Taylor Andrews
+ * Taylor Andrews
  *
- *  Key bindings:
- *  1      
- *  -      Zoom Out
- *  +      Zoom in
- *  arrows Change view angle
- *  ESC    Exit
+ * Key bindings:
+ * f          Toggle first person
+ * m          Toggle orthogonal and perspective (must be out of first person)
+ * w/s        Move in first person
+ * a/d        Rotate camera in first person
+ * PgUp/PgDn  Zoom in and zoom out
+ * 1/2        Change FOV
+ * arrows     Change view angle
+ * space      Pause light
+ * 0          Reset view angle
+ * ESC        Exit
  */
 
 #include "scene.h"
+#include "loadtexbmp.h"
 
-#define MAXN 64
+/* Necessary Function Prototypes */
+void idle();
 
 /* Global Variables */
 /* Window Settings */
 int th = 0; // Azimuth of view angle
 int ph = 0; // Elevation of view angle
 int rot = 0; // Rotation in first person
-int fov = 55; // Field of view
+int fov = 60; // Field of view
 double asp = 1; // Window aspect ratio
 double dim = 5.0; // Dimension of orthogonal box
 
@@ -32,35 +39,54 @@ int mode = 1; // Toggle orthogonal and projection
 int move = 1; // Move the light
 
 /* Light Values */
-float Lpos[4]; // Light position
-float ylight = 2; // Light y height
-int distance = 7; // Light distance
-int local = 0; // Local Viewer Model
-int emission = 0; // Emission intensity (%)
-int ambient = 40; // Ambient intensity (%)
-int diffuse = 100; // Diffuse intensity (%)
-int specular = 1; // Specular intensity (%)
-float shinyvec[1]; // Shininess (value)
-int zh = 90; // Light azimuth
+float yLight = 9; // Light y height
+int distance = 7;  // Light distance
+int local = 0;  // Local Viewer Model
+int emission = 0;  // Emission intensity (%)
+int ambient = 40;  // Ambient intensity (%)
+int diffuse = 100;  // Diffuse intensity (%)
+int specular = 1;  // Specular intensity (%)
+float shinyvec[1];    // Shininess (value)
+int zh  = 90;  // Light azimuth
+
+/* Shadows */
+#define dFloor 100
+#define yFloor -4.6
+float N[] = {0, -1, 0}; // Normal vector for the plane
+float E[] = {0, yFloor, 0 }; // Point of the plane
 
 /* Textures */
 unsigned int textures[10]; // Textures for Fighters
 unsigned int skybox[2]; // Skybox textures
 unsigned int ground[1]; // Ground Texture
 
-/* Shaders */
-int shader;
-
-/* Shadows */
-unsigned int framebuf=0;// Frame buffer id
-double Svec[4]; // Texture planes S
-double Tvec[4]; // Texture planes T
-double Rvec[4]; // Texture planes R
-double Qvec[4]; // Texture planes Q
-int Width; // Window width
-int Height; // Window height
-int shadowdim; // Size of shadow map textures
-char* text[]={"Shadows","Shadow Map"};
+/* 
+ * Adapted from example 34
+ *
+ * Multiply the current ModelView-Matrix with a shadow-projetion matrix.
+ *
+ * L is the position of the light source
+ * E is a point within the plane on which the shadow is to be projected.  
+ * N is the normal vector of the plane.
+ *
+ * Everything that is drawn after this call is "squashed" down to the plane.
+ */
+void ShadowProjection(float L[4], float E[4], float N[4])
+{
+    float mat[16];
+    float e = E[0]*N[0] + E[1]*N[1] + E[2]*N[2];
+    float l = L[0]*N[0] + L[1]*N[1] + L[2]*N[2];
+    float c = e - l;
+    
+    // Create the matrix.
+    mat[0] = N[0]*L[0]+c; mat[4] = N[1]*L[0];   mat[8]  = N[2]*L[0];   mat[12] = -e*L[0];
+    mat[1] = N[0]*L[1];   mat[5] = N[1]*L[1]+c; mat[9]  = N[2]*L[1];   mat[13] = -e*L[1];
+    mat[2] = N[0]*L[2];   mat[6] = N[1]*L[2];   mat[10] = N[2]*L[2]+c; mat[14] = -e*L[2];
+    mat[3] = N[0];        mat[7] = N[1];        mat[11] = N[2];        mat[15] = -l;
+    
+    // Multiply modelview matrix
+    glMultMatrixf(mat);
+}
 
 /* 
  * Draw the Skybox
@@ -95,7 +121,7 @@ void sky(double size)
         glTexCoord2f(0.75,1); glVertex3f(-size,+size,+size);
     glEnd();
 
-    // Top and bottom
+     // Top and bottom
     glBindTexture(GL_TEXTURE_2D, skybox[1]);
     glBegin(GL_QUADS);
         glTexCoord2f(0.0,0); glVertex3f(+size,+size,-size);
@@ -117,7 +143,6 @@ void project()
 {
     glMatrixMode(GL_PROJECTION); // Tell OpenGL we want to manipulate the projection matrix
     glLoadIdentity(); // Undo previous transformations
-
     // First person
     if(fp) 
     {
@@ -140,15 +165,22 @@ void project()
 void display()
 {
     int err; // For error checking
-    int id;
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Erase the window and clear the depth buffer
+    // Set up Light
+    float Ambient[]  = {0.3, 0.3, 0.3, 1.0};
+    float Diffuse[]  = {1.0, 1.0, 1.0, 1.0};
+    float Specular[] = {0.01*specular, 0.01*specular, 0.01*specular, 1.0};
+    float Position[] = {distance*Cos(zh), yLight, distance*Sin(zh), 1.0};
 
-    glDisable(GL_LIGHTING); // Turn off lighting
+    /* Create 1st Light Vectors */
+    // float Ambient[] = {0.01*ambient, 0.01*ambient, 0.01*ambient, 1.0};
+    // float Diffuse[] = {0.01*diffuse, 0.01*diffuse, 0.01*diffuse, 1.0};
+    // float Specular[] = {0.01*specular, 0.01*specular, 0.01*specular, 1.0};
+
+    // Erase the window and clear the depth buffer
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST); // Enable Z-buffering
     glLoadIdentity(); // Reset the transformation matrix
-
-    project();
-    glViewport(0,0,Width,Height);
 
     if (fp) {
         camera.x = 2 * dim * Sin(rot); // Ajust the camera vector based on rotation
@@ -170,40 +202,94 @@ void display()
            glRotatef(ph,1,0,0);
            glRotatef(th,0,1,0);
         }
-
     }
     
-    sky(3.5*dim); // Draw the skybox
-    
-    /* Draw the Light */
+    sky(3.5*dim);  // Draw the skybox
+ 
+    // Draw the light as a sphere
     glColor3f(1,1,1);
-
     glPushMatrix();
-    glTranslated(Lpos[0],Lpos[1],Lpos[2]);
-      glutSolidSphere(0.1,10,10);
+        glTranslated(Position[0],Position[1],Position[2]);
+        glutSolidSphere(0.03,10,10);
     glPopMatrix();
 
-    //  Enable shader program
-    glUseProgram(shader);
-    id = glGetUniformLocation(shader,"tex");
-    if (id>=0) glUniform1i(id,0);
-    id = glGetUniformLocation(shader,"depth");
-    if (id>=0) glUniform1i(id,1);
+    glEnable(GL_NORMALIZE); // Normalize normals
+    glEnable(GL_LIGHTING); // Enable lighting
 
-    // Set up the eye plane for projecting the shadow map on the scene
-    glActiveTexture(GL_TEXTURE1);
-    glTexGendv(GL_S,GL_EYE_PLANE,Svec);
-    glTexGendv(GL_T,GL_EYE_PLANE,Tvec);
-    glTexGendv(GL_R,GL_EYE_PLANE,Rvec);
-    glTexGendv(GL_Q,GL_EYE_PLANE,Qvec);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_COMPARE_MODE,GL_COMPARE_R_TO_TEXTURE);
-    glActiveTexture(GL_TEXTURE0);
+    // Enable color material    
+    glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+
+    // Enable light
+    glEnable(GL_LIGHT0);
+    
+    /* Set Light Characteristics */ 
+    glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, Diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, Position);
+
+    /* Surrounding Arena */
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    drawSquares();    
+    glDisable(GL_POLYGON_OFFSET_FILL);
 
     /* Draw the Scene */
-    drawScene(1, zh);
+    drawScene(zh);
 
-    //  Disable shader program
-    glUseProgram(0);
+    //  Save what is glEnabled
+    glPushAttrib(GL_ENABLE_BIT);
+
+    /* Shadows, adapted from example 34 */
+    glDisable(GL_LIGHTING);
+    
+    // Enable stencil operations
+    glEnable(GL_STENCIL_TEST);
+
+         /*
+          *  Step 1:  Set stencil buffer to 1 where there are shadows
+          */
+         //  Existing value of stencil buffer doesn't matter
+         glStencilFunc(GL_ALWAYS,1,0xFFFFFFFF);
+         //  Set the value to 1 (REF=1 in StencilFunc)
+         //  only if Z-buffer would allow write
+         glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+         //  Make Z-buffer and color buffer read-only
+         glDepthMask(0);
+         glColorMask(0,0,0,0);
+         //  Draw flattened scene
+         glPushMatrix();
+         ShadowProjection(Position,E,N);
+         drawScene(zh);
+         glPopMatrix();
+         //  Make Z-buffer and color buffer read-write
+         glDepthMask(1);
+         glColorMask(1,1,1,1);
+
+         /*
+          *  Step 2:  Draw shadow masked by stencil buffer
+          */
+         //  Set the stencil test draw where stencil buffer is > 0
+         glStencilFunc(GL_LESS,0,0xFFFFFFFF);
+         //  Make the stencil buffer read-only
+         glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
+         //  Enable blending
+         glEnable(GL_BLEND);
+         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+         glColor4f(0,0,0,0.5);
+         //  Draw the shadow over the entire floor
+         glBegin(GL_QUADS);
+         glVertex3f(-dFloor,yFloor,-dFloor);
+         glVertex3f(+dFloor,yFloor,-dFloor);
+         glVertex3f(+dFloor,yFloor,+dFloor);
+         glVertex3f(-dFloor,yFloor,+dFloor);
+         glEnd();
+    
+
+    // Undo everything we enabled above
+    glPopAttrib();
+
+    glDisable(GL_LIGHTING); // Done lighting, disable it
 
     /* Error Checking */
     err = glGetError();
@@ -277,7 +363,9 @@ void key(unsigned char ch, int x, int y)
         }
         //  Switch display mode
         else if (ch == 'm' || ch == 'M')
+        {
            mode = 1-mode;
+        }
    }
 
    project();
@@ -322,151 +410,9 @@ void special(int key, int x, int y)
             dim += 0.1;
    }
    project();
+   //Project(fov, asp, dim); // Update projection
    glutIdleFunc(move?idle:NULL); // Animate
    glutPostRedisplay(); // GLUT needs to redisplay the scene
-}
-
-/*
- * Build Shadow Map
- * Adaped from Example 36
- */
-void ShadowMap(void)
-{
-    double Lmodel[16];  //  Light modelview matrix
-    double Lproj[16];   //  Light projection matrix
-    double Tproj[16];   //  Texture projection matrix
-    double Dim=2.0;     //  Bounding radius of scene
-    double Ldist;       //  Distance from light to scene center
-
-    //  Save transforms and modes
-    glPushMatrix();
-    glPushAttrib(GL_TRANSFORM_BIT|GL_ENABLE_BIT);
-    //  No write to color buffer and no smoothing
-    glShadeModel(GL_FLAT);
-    glColorMask(0,0,0,0);
-    // Overcome imprecision
-    glEnable(GL_POLYGON_OFFSET_FILL);
-
-    //  Turn off lighting and set light position
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
-    glDisable(GL_NORMALIZE);
-
-    //  Light distance
-    Ldist = sqrt(Lpos[0]*Lpos[0] + Lpos[1]*Lpos[1] + Lpos[2]*Lpos[2]);
-    if (Ldist<1.1*Dim) Ldist = 1.1*Dim;
-
-    //  Set perspective view from light position
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(114.6*atan(Dim/Ldist),1,Ldist-Dim,Ldist+Dim);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(Lpos[0],Lpos[1],Lpos[2] , 0,0,0 , 0,1,0);
-    //  Size viewport to desired dimensions
-    glViewport(0,0,shadowdim,shadowdim);
-
-    // Redirect traffic to the frame buffer
-    glBindFramebuffer(GL_FRAMEBUFFER,framebuf);
-
-    // Clear the depth buffer
-    glClear(GL_DEPTH_BUFFER_BIT);
-    // Draw all objects that can cast a shadow
-    drawScene(0, zh);
-
-    //  Retrieve light projection and modelview matrices
-    glGetDoublev(GL_PROJECTION_MATRIX,Lproj);
-    glGetDoublev(GL_MODELVIEW_MATRIX,Lmodel);
-
-    // Set up texture matrix for shadow map projection,
-    // which will be rolled into the eye linear
-    // texture coordinate generation plane equations
-    glLoadIdentity();
-    glTranslated(0.5,0.5,0.5);
-    glScaled(0.5,0.5,0.5);
-    glMultMatrixd(Lproj);
-    glMultMatrixd(Lmodel);
-
-    // Retrieve result and transpose to get the s, t, r, and q rows for plane equations
-    glGetDoublev(GL_MODELVIEW_MATRIX,Tproj);
-    Svec[0] = Tproj[0];    Tvec[0] = Tproj[1];    Rvec[0] = Tproj[2];    Qvec[0] = Tproj[3];
-    Svec[1] = Tproj[4];    Tvec[1] = Tproj[5];    Rvec[1] = Tproj[6];    Qvec[1] = Tproj[7];
-    Svec[2] = Tproj[8];    Tvec[2] = Tproj[9];    Rvec[2] = Tproj[10];   Qvec[2] = Tproj[11];
-    Svec[3] = Tproj[12];   Tvec[3] = Tproj[13];   Rvec[3] = Tproj[14];   Qvec[3] = Tproj[15]; 
-
-    // Restore normal drawing state
-    glShadeModel(GL_SMOOTH);
-    glColorMask(1,1,1,1);
-    glDisable(GL_POLYGON_OFFSET_FILL);
-    glPopAttrib();
-    glPopMatrix();
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
-
-    //  Check if something went wrong
-    ErrCheck("ShadowMap");
-}
-
-/* Adapted from example 36 */
-void InitMap()
-{
-    unsigned int shadowtex; //  Shadow buffer texture id
-    int n;
-
-    //  Make sure multi-textures are supported
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS,&n);
-    if (n<2) Fatal("Multiple textures not supported\n");
-
-    //  Get maximum texture buffer size
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE,&shadowdim);
-    //  Limit texture size to maximum buffer size
-    glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE,&n);
-    if (shadowdim>n) shadowdim = n;
-    //  Limit texture size to 2048 for performance
-    if (shadowdim>2048) shadowdim = 2048;
-    if (shadowdim<512) Fatal("Shadow map dimensions too small %d\n",shadowdim);
-
-    //  Do Shadow textures in MultiTexture 1
-    glActiveTexture(GL_TEXTURE1);
-
-    //  Allocate and bind shadow texture
-    glGenTextures(1,&shadowtex);
-    glBindTexture(GL_TEXTURE_2D,shadowtex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, shadowdim, shadowdim, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-
-    //  Map single depth value to RGBA (this is called intensity)
-    glTexParameteri(GL_TEXTURE_2D,GL_DEPTH_TEXTURE_MODE,GL_INTENSITY);
-
-    //  Set texture mapping to clamp and linear interpolation
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-    //  Set automatic texture generation mode to Eye Linear
-    glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR);
-    glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR);
-    glTexGeni(GL_R,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR);
-    glTexGeni(GL_Q,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR);
-
-    // Switch back to default textures
-    glActiveTexture(GL_TEXTURE0);
-
-    // Attach shadow texture to frame buffer
-    glGenFramebuffers(1,&framebuf);
-    glBindFramebuffer(GL_FRAMEBUFFER,framebuf);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowtex, 0);
-    //  Don't write or read to visible color buffer
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    //  Make sure this all worked
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) Fatal("Error setting up frame buffer\n");
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
-
-    //  Check if something went wrong
-    ErrCheck("InitMap");
-
-    //  Create shadow map
-    ShadowMap();
 }
 
 /* Called when glut is idle */
@@ -474,10 +420,6 @@ void idle()
 {
     double t = glutGet(GLUT_ELAPSED_TIME)/1000.0; // Keep track of time for animations
     zh = fmod(90*t,360.0);
-
-    // Update shadow map
-    ShadowMap();
-
     glutPostRedisplay(); // Tell glut to redisplay the scene
 }
 
@@ -485,69 +427,12 @@ void idle()
 void reshape(int width, int height)
 {
     asp = (height>0) ? (double) width/height : 1; // Aspect ration of width to height
+    //glViewport(-4, -4, width+4, height+4); // Set the viewport to the entire window
     project(); // Set projection
-
     //  Set the viewport to the entire window
     glViewport(0,0, width,height);
-
-    Width = width;
-    Height = height;
-}
-
-/* Read in the Text File, adpated from ex36 */
-static char* ReadText(const char *file)
-{
-    int   n;
-    char* buffer;
-    //  Open file
-    FILE* f = fopen(file,"rt");
-    if (!f) Fatal("Cannot open text file %s\n",file);
-    //  Seek to end to determine size, then rewind
-    fseek(f,0,SEEK_END);
-    n = ftell(f);
-    rewind(f);
-    //  Allocate memory for the whole file
-    buffer = (char*)malloc(n+1);
-    if (!buffer) Fatal("Cannot allocate %d bytes for text file %s\n",n+1,file);
-    //  Snarf the file
-    if (fread(buffer,n,1,f)!=1) Fatal("Cannot read %d bytes for text file %s\n",n,file);
-    buffer[n] = 0;
-    //  Close and return
-    fclose(f);
-    return buffer;
-}
-
-/* Create the Shader, adpated from ex36 */
-void CreateShader(int prog,const GLenum type,const char* file)
-{
-    //  Create the shader
-    int shader = glCreateShader(type);
-    //  Load source code from file
-    char* source = ReadText(file);
-    glShaderSource(shader,1,(const char**)&source,NULL);
-    free(source);
-    //  Compile the shader
-    glCompileShader(shader);
-    //  Attach to shader program
-    glAttachShader(prog,shader);
-}
-
-/*
- * Create the Shader Program
- * Adpated from ex36
- */
-int CreateShaderProg(const char* VertFile,const char* FragFile)
-{
-    //  Create program
-    int prog = glCreateProgram();
-    //  Create and compile vertex shader
-    if (VertFile) CreateShader(prog,GL_VERTEX_SHADER,VertFile);
-    //  Create and compile fragment shader
-    if (FragFile) CreateShader(prog,GL_FRAGMENT_SHADER,FragFile);
-    //  Link program
-    glLinkProgram(prog);
-    //  Return name
-    return prog;
+    //  Set projection
+    //Project(fov,asp,dim);
 }
 
 /* Start Glut */
@@ -557,15 +442,9 @@ int main(int argc, char* argv[])
 
     /* Initialize Window */
     glutInit(&argc,argv);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH); // Ask for z buffering
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_STENCIL | GLUT_DEPTH);
     glutInitWindowSize(800,450); // Window size
     glutCreateWindow("Taylor Andrews"); // Name the window
-
-// #ifdef USEGLEW
-//    //  Initialize GLEW
-//    if (glewInit()!=GLEW_OK) Fatal("Error initializing GLEW\n");
-//    if (!GLEW_VERSION_2_0) Fatal("OpenGL 2.0 not supported\n");
-// #endif
 
     /* Tell Glut What to Call */
     glutDisplayFunc(display);
@@ -590,12 +469,6 @@ int main(int argc, char* argv[])
     skybox[1] = LoadTexBMP("sky1.bmp");
 
     ground[0] = LoadTexBMP("ground.bmp");
-
-    glEnable(GL_DEPTH_TEST); // Enable Z-buffering
-
-    // Initialize texture map
-    shader = CreateShaderProg("shadow.vert","shadow.frag");
-    InitMap();
 
     /* Error Checking */
     err = glGetError();
